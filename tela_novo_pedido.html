@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Document</title>
+</head>
+<body>
+   <div class="main_container">
+    <section class="sec1">
+        <div class="main_logo"><img src="/assets/logo_smach.jpeg" alt=""></div>
+        <div class="op_info">
+            <p>Operador: Vicente</p>
+            <p>Data-Hora: 14/10/2022 - 09:06</p>
+            <p>Versão 1.0</p>
+        </div>
+    </section>
+    <section class="sec2">
+        <h1>Novo pedido</h1>
+        <form action="#">
+           <div id="consume">
+                <label>Tipo de consumo<br>
+                    <input type="radio" name="consumo" value="delivery">Delivery
+                    <input type="radio" name="consumo" value="salao">Salão
+                </label>
+           </div><br>
+            <label>Buscar produto <br>
+                <input type="number" id="product_code_input" placeholder="Código do produto">
+                <button id="button_search">Buscar</button>
+            </label><span id="erro"></span><br>
+            <label>Quantidade
+                <input type="number" id="product_qty_input" placeholder="0">
+            </label>
+            <label>Produto
+                <input type="text" disabled id="product_name_output" placeholder="Nome do produto">
+            </label>
+            <label>Preço
+                <input type="text" disabled id="product_price_output" placeholder="R$ 00.00">
+            </label>
+        </form>
+        <button id="button_add_product" disabled>+ Adicionar Produto</button>
+        <div class="orders_info">
+            <table  id="items">
+                <tr>
+                    <th>Código</th>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                </tr>
+                <tr>
+
+                </tr>
+            </table>
+            <div class="orders_core">
+                <img src="/assets/img_sem_pedido.jpeg" id="no_order_img" alt="">
+            </div>
+            <div id="total_amount"></div>
+            <div class="orders_options">
+                <button id="button_orders_cancel">Cancelar</button>
+                <button id="button_order_save">Salvar pedido</button>
+            </div>
+            <span>Copyright</span>
+        </div>
+    </section>
+   </div>
+<script src="/js/smach_lanches.js"></script>
+</body>
+</html>

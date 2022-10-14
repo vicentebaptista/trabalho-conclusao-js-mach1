@@ -1,0 +1,12 @@
+.main_container{
+    display: flex;
+}
+.sec1 .sec2{
+    display: block;
+}
+.orders_info{
+    list-style: none;
+}
+.hidden {
+    display: none;
+}

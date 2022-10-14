@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Document</title>
+</head>
+<body>
+   <div class="main_container">
+    <section class="sec1">
+        <div class="main_logo"><img src="/assets/logo_smach.jpeg" alt=""></div>
+        <div class="op_info">
+            <p>Operador: Vicente</p>
+            <p>Data-Hora: 14/10/2022 - 09:06</p>
+            <p>Versão 1.0</p>
+        </div>
+    </section>
+    <section class="sec2">
+        <h1>Todos os pedidos</h1>
+        <button id="button_new_order"><a href="/tela_novo_pedido.html">+ Novo pedido</a></button>
+        <form>
+            <label>Filtrar por
+                <select name="Tipo" id="Tipo">
+                    <option value="Delivery">Delivery</option>
+                    <option value="Salao">Salão</option>
+                </select>
+                <select name="Status" id="status">
+                    <option value="Recebido">Recebido</option>
+                    <option value="Pronto">Pronto</option>
+                    <option value="Entregue">Entregue</option>
+                </select>
+            </label>
+            <button id="button_print">imprimir</button>
+        </form>
+        <div class="orders_info">
+            <table>
+                <tr>
+                    <th>Nº do pedido</th>
+                    <th>Itens</th>
+                    <th>Tipo</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                </tr>
+            </table>
+            <div class="orders_core">
+                <img src="/assets/img_sem_pedido.jpeg" alt="">
+            </div>
+            <!-- <div class="orders_options">
+                <button id="button_orders_cancel">Cancelar</button>
+                <button id="button_order_save">Salvar pedido</button>
+            </div> -->
+            <span>Copyright</span>
+        </div>
+    </section>
+   </div>
+<script src="/js/smach_lanches.js"></script>
+</body>
+</html>
