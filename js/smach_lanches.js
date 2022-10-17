@@ -50,7 +50,6 @@ let listaProdutos = [
         preco:50.00
     }
 ];
-let elementoConsumo = document.getElementById('consume');
 let codInserido = document.getElementById('product_code_input');
 let btnPesquisarProduto = document.getElementById('button_search');
 let campoQuantidade = document.getElementById('product_qty_input');
@@ -78,7 +77,7 @@ function funcaoPesquisarProduto(){
         return item.preco
     })
     if (filtrado.length === 0) {
-        erro.innerHTML = `Nenhum item encontrado ou quantidade não inserida`;
+        erro.innerHTML = `Nenhum item encontrado`;
         campoProductName.value = "";
         campoProductPrice.value = "";
     } else {
@@ -89,33 +88,58 @@ function funcaoPesquisarProduto(){
     }
     
 };
+let arrPedido = [];
 function funcaoAdicionarProduto(){
     let codigoproduto = codInserido.value;
     let quantidadeItem = campoQuantidade.value;
     let campoProduto = campoProductName.value;
     let campoPreco = campoProductPrice.value;
+    let tipoConsumo = document.querySelector('input[name="consumo"]:checked').value;
     if (quantidadeItem.length === 0){
-        erro.innerHTML = `Quantidade não inserida`
-    } else {
+        erro.innerHTML = `Quantidade não inserida` // verifica se foi inserida a quantidade de intens para adicionar ao pedido
+    } else { // daqui pra baixo vai adicionar os itens na tabela do HTML
     let precoFinal = parseFloat(campoPreco.replace('R$',"")) * parseFloat(quantidadeItem);
     addedItems.innerHTML += `<tr><td>${codigoproduto}</td>
     <td>${campoProduto}</td>
     <td>${quantidadeItem}</td>
-    <td>R$${precoFinal}</td></tr>`;
+    <td class="valor-calculado">R$${precoFinal}</td></tr>`;
     codInserido.value = "";
     campoQuantidade.value = "";
     campoProductName.value = "";
     campoProductPrice.value = "";
     btnAddProduct.setAttribute("disabled",true);
-    erro.innerHTML = ``; 
-    totalPedido.innerHTML += `<h2>TOTAL DO PEDIDO:R$${precoFinal}</h2>`              
+    erro.innerHTML = ``;
+    var els = document.getElementsByClassName("valor-calculado");
+    var valorcalculado = 0;
+    [].forEach.call(els, function (item) 
+  {
+    valorcalculado += parseFloat(item.innerHTML.replace("R$",""));
+  });
+    totalPedido.innerHTML=`VALOR TOTAL DO PEDIDO: R$${valorcalculado}`;
+
+    let pedido  = {
+        numero:Math.floor(Math.random() * 5000),
+        itens:campoProduto,
+        quantidade:quantidadeItem,
+        tipo:tipoConsumo,
+        valortotal:valorcalculado,
+        status:"recebido"
+    }
+    arrPedido.push(pedido);
+    console.log(arrPedido);
+           
 }};
 function funcaoCancelar(){
     addedItems.innerHTML = "";
     codInserido.value = "";
+    totalPedido.innerHTML = ``;
 };
 
+    
 
+function funcaoSalvaPedido(){
+
+}
 
 
 
@@ -138,4 +162,6 @@ function funcaoCancelar(){
 
 btnCancel.addEventListener("click", ()=> funcaoCancelar());
 btnAddProduct.addEventListener("click", ()=> funcaoAdicionarProduto());
+// btnAddProduct.addEventListener("click", ()=> funcaoPrecoFinal());
 btnPesquisarProduto.addEventListener("click", ()=> funcaoPesquisarProduto());
+btnSave.addEventListener("click",()=> funcaoSalvaPedido());
