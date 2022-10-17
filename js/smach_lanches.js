@@ -57,15 +57,30 @@ let campoProductName = document.getElementById('product_name_output');
 let campoProductPrice = document.getElementById('product_price_output');
 let btnAddProduct = document.getElementById('button_add_product');
 let btnCancel = document.getElementById('button_orders_cancel');
+let btnNewOrder = document.getElementById('button_new_order');
 let btnSave = document.getElementById('button_order_save');
 let blankImg = document.getElementById('no_order_img');
 let erro = document.getElementById('erro');
 let addedItems = document.getElementById('items');
-let totalPedido = document.getElementById('total_amount')
+let totalPedido = document.getElementById('total_amount');
+let savedOrder = document.getElementById('order_items');
+let sessao1 = document.getElementById('sessao1');
+let sessao2 = document.getElementById('sessao2');
+let filtroTipo = document.getElementById('filter_type');
+let filterStatus = document.getElementById('filter_status');
 
 
 
-;
+let arrPedido = [];
+function funcaoNovoPedido(){
+    sessao1.setAttribute("class","inactive");
+    sessao2.setAttribute("class","active");
+    addedItems.innerHTML = "";
+    totalPedido.innerHTML= "";
+    arrPedido = [];
+}
+
+
 function funcaoPesquisarProduto(){
     let codigoproduto = codInserido.value;
     let filtrado = listaProdutos.filter(function filtraitem(item){
@@ -88,7 +103,7 @@ function funcaoPesquisarProduto(){
     }
     
 };
-let arrPedido = [];
+
 function funcaoAdicionarProduto(){
     let codigoproduto = codInserido.value;
     let quantidadeItem = campoQuantidade.value;
@@ -100,9 +115,9 @@ function funcaoAdicionarProduto(){
     } else { // daqui pra baixo vai adicionar os itens na tabela do HTML
     let precoFinal = parseFloat(campoPreco.replace('R$',"")) * parseFloat(quantidadeItem);
     addedItems.innerHTML += `<tr><td>${codigoproduto}</td>
-    <td>${campoProduto}</td>
-    <td>${quantidadeItem}</td>
-    <td class="valor-calculado">R$${precoFinal}</td></tr>`;
+                             <td>${campoProduto}</td>
+                             <td>${quantidadeItem}</td>
+                             <td class="valor-calculado">R$${precoFinal}</td></tr>`;
     codInserido.value = "";
     campoQuantidade.value = "";
     campoProductName.value = "";
@@ -119,27 +134,44 @@ function funcaoAdicionarProduto(){
 
     let pedido  = {
         numero:Math.floor(Math.random() * 5000),
-        itens:campoProduto,
-        quantidade:quantidadeItem,
+        itens:`${quantidadeItem} - ${campoProduto}<br>`,
         tipo:tipoConsumo,
-        valortotal:valorcalculado,
+        valortotal:precoFinal,
         status:"recebido"
     }
     arrPedido.push(pedido);
-    console.log(arrPedido);
            
 }};
 function funcaoCancelar(){
     addedItems.innerHTML = "";
     codInserido.value = "";
     totalPedido.innerHTML = ``;
+    sessao1.setAttribute("class","active");
+    sessao2.setAttribute("class","inactive");
 };
 
     
 
 function funcaoSalvaPedido(){
+    let itenspedido = arrPedido.reduce((prev,elem)=> prev + elem.itens, "");
+    let numeropedido = arrPedido.reduce((prev,elem)=> prev + elem.numero, 0);
+    let tipoConsumo = document.querySelector('input[name="consumo"]:checked').value;
+    let arrayvalores = arrPedido.map(function(item){return item.valortotal});
+    let valortotalpedido = arrayvalores.reduce((prev,elem)=> prev + elem);
+    let status = "recebido";
+    savedOrder.innerHTML += `<tr><td><input type = "checkbox">${numeropedido}</td>
+    <td>${itenspedido}</td>
+    <td>${tipoConsumo}</td>
+    <td>R$${valortotalpedido}</td>
+    <td>${status}</td></tr>`;
+    sessao1.setAttribute("class","active");
+    sessao2.setAttribute("class","inactive");
+    console.log(filterStatus.selectedIndex);
+};
 
-}
+function funcaoFiltrarTipo(){
+    tipoSelecionado = filtroTipo.value;
+};
 
 
 
@@ -159,9 +191,10 @@ function funcaoSalvaPedido(){
 
 
 
-
+btnNewOrder.addEventListener("click", ()=> funcaoNovoPedido());
 btnCancel.addEventListener("click", ()=> funcaoCancelar());
 btnAddProduct.addEventListener("click", ()=> funcaoAdicionarProduto());
 // btnAddProduct.addEventListener("click", ()=> funcaoPrecoFinal());
 btnPesquisarProduto.addEventListener("click", ()=> funcaoPesquisarProduto());
-btnSave.addEventListener("click",()=> funcaoSalvaPedido());
+btnSave.addEventListener("click", ()=> funcaoSalvaPedido());
+filtroTipo.addEventListener("click", ()=> funcaoFiltrarTipo());
