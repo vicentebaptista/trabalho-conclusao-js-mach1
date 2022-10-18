@@ -76,7 +76,12 @@ let arrPedido = [];
 function funcaoNovoPedido() {
     sessao1.setAttribute("class", "inactive");
     sessao2.setAttribute("class", "active");
-    addedItems.innerHTML = "";
+    addedItems.innerHTML = `<tr>
+                                <th>Código</th>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Valor</th>
+                            </tr>`;
     totalPedido.innerHTML = "";
 }
 
@@ -134,10 +139,14 @@ function exibirItensPedido(arrItens) {
     addedItems.innerHTML = "";
     let valorTotalPedido = 0;
     arrItens.forEach(function (item) {
-        addedItems.innerHTML += `<tr><td>${item.codigo}</td>
-                             <td>${item.item}</td>
-                             <td>${item.quantidade}</td>
-                             <td class="valor-calculado">R$${item.preco}</td></tr>`;
+        addedItems.innerHTML += `
+                    
+                    <tr>
+                        <td>${item.codigo}</td>
+                        <td>${item.item}</td>
+                        <td>${item.quantidade}</td>
+                        <td>R$${item.preco}</td>
+                    </tr>`;
         valorTotalPedido += item.preco;
     })
     totalPedido.innerHTML = `VALOR TOTAL DO PEDIDO: R$${valorTotalPedido}`;
@@ -161,15 +170,36 @@ function funcaoSalvaPedido() {
         numero: Math.floor(Math.random() * 5000),
         itens: arraypedidoitens,
         tipo: document.querySelector('input[name="consumo"]:checked').value,
-        // valortotal: precoFinal,
         status: "recebido"
     });
     arraypedidoitens = [];
     console.log(arrPedido);
+    exibirTabelaPedidos(arrPedido);
 };
-function exibirTabelaPedidos() {
+function exibirTabelaPedidos(arrTotal) {
+    arrTotal.forEach(function (item) {
+        let qty = item.itens.map(function(val){return val.quantidade});
+        let itensnopedido = item.itens.map(function(val){return val.item});
+        let campodeitens = {
+            itens:itensnopedido,
+            quantidade:qty
+        }
+        savedOrder.innerHTML += `<tr><td>${item.numero}</td>
+        <td id="item_qty">${campodeitens.quantidade} - ${campodeitens.itens}</td>
+        <td>${item.tipo}</td>
+        <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
+        <td>${item.status}</td></tr>
+        `
+        
+        console.log(campodeitens);
+    })
+    arrPedido = [];
     
-}
+    
+    
+};
+
+
 
 // function funcaoFiltrarTipo(){
 //     let tipoSelecionado = filtroTipo.value;
@@ -187,27 +217,9 @@ function exibirTabelaPedidos() {
 // };
 
 
-
-objCleyton = {
-    pedido: 2000,
-    tipo: 'delivery',
-    total: 100,
-    itens: [{ produto: 'Item 1', Valor: 50 }, { produto: 'Item 2', Valor: 50 }]
-}
-
-
-
-
-
-
-
-
-
-
 btnNewOrder.addEventListener("click", () => funcaoNovoPedido());
 btnCancel.addEventListener("click", () => funcaoCancelar());
 btnAddProduct.addEventListener("click", () => funcaoAdicionarProduto());
-// btnAddProduct.addEventListener("click", ()=> funcaoPrecoFinal());
 btnPesquisarProduto.addEventListener("click", () => funcaoPesquisarProduto());
 btnSave.addEventListener("click", () => funcaoSalvaPedido());
 filtroTipo.addEventListener("change", () => funcaoFiltrarTipo());
