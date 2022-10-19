@@ -73,6 +73,7 @@ let arraypedidoitens = [];
 
 
 let arrPedido = [];
+let arrFiltro = [];
 function funcaoNovoPedido() {
     sessao1.setAttribute("class", "inactive");
     sessao2.setAttribute("class", "active");
@@ -172,49 +173,104 @@ function funcaoSalvaPedido() {
         tipo: document.querySelector('input[name="consumo"]:checked').value,
         status: "recebido"
     });
+    arrFiltro.push({
+        numero: Math.floor(Math.random() * 5000),
+        itens: arraypedidoitens,
+        tipo: document.querySelector('input[name="consumo"]:checked').value,
+        status: "recebido"
+    });
     arraypedidoitens = [];
     console.log(arrPedido);
     exibirTabelaPedidos(arrPedido);
 };
 function exibirTabelaPedidos(arrTotal) {
+    let HTML = "<tr>";
     arrTotal.forEach(function (item) {
-        let qty = item.itens.map(function(val){return val.quantidade});
-        let itensnopedido = item.itens.map(function(val){return val.item});
-        let campodeitens = {
-            itens:itensnopedido,
-            quantidade:qty
-        }
-        savedOrder.innerHTML += `<tr><td>${item.numero}</td>
-        <td id="item_qty">${campodeitens.quantidade} - ${campodeitens.itens}</td>
+        let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
+        HTML += `<td><input type="checkbox" id="${item.numero}">${item.numero}</td>`;
+        HTML += "<td>"
+        itensnopedido.forEach((elemento) => {
+            HTML += `${elemento}<br>`
+        })
+        HTML += "</td>"
+        HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td>${item.status}</td></tr>
-        `
-        
-        console.log(campodeitens);
+        <td>${item.status}</td></tr>`
     })
+    savedOrder.innerHTML += HTML;
     arrPedido = [];
-    
-    
-    
+
+
+
 };
+function procurar(){
+    arrPedido.filter(funct)
+}
 
 
+function funcaoFiltrar(){
+    let valorSelectFilter = filtroTipo.value;
+    let valorStatus = filterStatus.value;
+    let filtradoTipo = arrFiltro.filter(function(item){
+        return item.tipo == valorSelectFilter.toLowerCase() || valorSelectFilter == ""
+    })
+     
+    filtradoTipo = filtradoTipo.filter(function(item){
+        return item.status == valorStatus.toLowerCase() || valorStatus ==""
+    })
+    console.log(filtradoTipo);
+    if (filtradoTipo !== []){
+        savedOrder.innerHTML = ``;
+        let HTML = `<tr>
+        <th>Nº do pedido</th>
+        <th>Itens</th>
+        <th>Tipo</th>
+        <th>Valor</th>
+        <th>Status</th>
+        </tr><tr>`;
+        filtradoTipo.forEach(function (item) {
+        let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
+        HTML += `<td><input type="checkbox" id="${item.numero}">${item.numero}</td>`;
+        HTML += "<td>"
+        itensnopedido.forEach((elemento) => {
+            HTML += `${elemento}<br>`
+        })
+        HTML += "</td>"
+        HTML += `
+        <td>${item.tipo}</td>
+        <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
+        <td>${item.status}</td></tr>`
+    })
+    savedOrder.innerHTML += HTML;
+    }
+    if (filtradoTipo == []){
+        savedOrder.innerHTML = ``;
+        let HTML =  `<tr>
+        <th>Nº do pedido</th>
+        <th>Itens</th>
+        <th>Tipo</th>
+        <th>Valor</th>
+        <th>Status</th>
+    </tr><tr>`;
+    arrFiltro.forEach(function (item) {
+        let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
+        HTML += `<td><input type="checkbox" id="${item.numero}">${item.numero}</td>`;
+        HTML += "<td>"
+        itensnopedido.forEach((elemento) => {
+            HTML += `${elemento}<br>`
+        })
+        HTML += "</td>"
+        HTML += `
+        <td>${item.tipo}</td>
+        <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
+        <td>${item.status}</td></tr>`
+    })
+    savedOrder.innerHTML += HTML;
 
-// function funcaoFiltrarTipo(){
-//     let tipoSelecionado = filtroTipo.value;
-// let elementos = document.getElementsByClassName("pedido");
-// let valores = [];
-// for (let i = 0; i < elementos.length; i++) {
-//   valores.push(elementos[i].innerHTML.replace('<input type="checkbox">', ""));
-// //   console.log(valores);
-// };
-// var arrayfiltrado = valores.filter(function(item){
-//     return item.toLowerCase() == tipoSelecionado.toLowerCase()
-// })
-//     console.log(tipoSelecionado);
+    }
 
-// };
+};
 
 
 btnNewOrder.addEventListener("click", () => funcaoNovoPedido());
@@ -222,4 +278,5 @@ btnCancel.addEventListener("click", () => funcaoCancelar());
 btnAddProduct.addEventListener("click", () => funcaoAdicionarProduto());
 btnPesquisarProduto.addEventListener("click", () => funcaoPesquisarProduto());
 btnSave.addEventListener("click", () => funcaoSalvaPedido());
-filtroTipo.addEventListener("change", () => funcaoFiltrarTipo());
+filtroTipo.addEventListener("change", () => funcaoFiltrar());
+filterStatus.addEventListener("change", () => funcaoFiltrar());
