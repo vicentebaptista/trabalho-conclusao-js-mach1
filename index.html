@@ -20,15 +20,15 @@
     <section class="sec2 active" id="sessao1">
         <h1>Todos os pedidos</h1>
         <button id="button_new_order">Novo pedido</button>
-        <form>
+        <form id="form_filter">
             <label>Filtrar por
                 <select name="Tipo" id="filter_type">
-                    <option value=""></option>
+                    <option value="">Todos</option>
                     <option value="Delivery">Delivery</option>
                     <option value="Salao">Salão</option>
                 </select>
                 <select name="Status" id="filter_status">
-                    <option value=""></option>
+                    <option value="">Todos</option>
                     <option value="Recebido">Recebido</option>
                     <option value="Pronto">Pronto</option>
                     <option value="Entregue">Entregue</option>
@@ -36,6 +36,10 @@
             </label>
             <button id="button_print">imprimir</button>
         </form>
+        <div hidden id="options">
+            <button id="edit">Editar</button>
+            <button id="remove">Excluir</button>
+        </div>
         <div class="orders_info">
             <table id="order_items">
                 <tr>
