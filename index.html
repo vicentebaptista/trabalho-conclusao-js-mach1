@@ -34,11 +34,18 @@
                     <option value="Entregue">Entregue</option>
                 </select>
             </label>
-            <button id="button_print">imprimir</button>
+            <button id="button_print" onClick="window.print()" >imprimir</button>
         </form>
         <div hidden id="options">
-            <button id="edit">Editar</button>
             <button id="remove">Excluir</button>
+            <button id="change_status">Alterar status</button>
+            <div id="change_status_select" hidden>
+                <select name="status" id="filtro_select">
+                    <option value="Pronto">Pronto</option>
+                    <option value="Entregue">Entregue</option>
+                </select>
+                <button id="set_status">Confirmar</button>
+            </div>
         </div>
         <div class="orders_info">
             <table id="order_items">

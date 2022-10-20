@@ -72,14 +72,20 @@ let formFilter = document.getElementById('form_filter');
 let campoOptions = document.getElementById('options');
 let btnEdit = document.getElementById('edit');
 let btnRemove = document.getElementById('remove');
+let selectStatus = document.getElementById('change_status_select');
+let btnStatus = document.getElementById('change_status');
+let btnSetStatus = document.getElementById('set_status');
+let filtroSelect = document.getElementById('filtro_select');
 let nPedido = Math.floor(Math.random() * 5000);
 let arraypedidoitens = [];
 
-
-
-let arrPedido = [];
-let arrEditar = [];
+let arrCorrige = [];
+let arrTroca = [];
 let arrFiltro = [];
+let arrPedido = [];
+let arrPed = [];
+let arrSalvaPedidos = [];
+let arrStatus = [];
 function funcaoNovoPedido() {
     sessao1.setAttribute("class", "inactive");
     sessao2.setAttribute("class", "active");
@@ -90,6 +96,8 @@ function funcaoNovoPedido() {
                                 <th>Valor</th>
                             </tr>`;
     totalPedido.innerHTML = "";
+    arrTotal = [];
+    arrPedido = [];
 }
 
 
@@ -138,7 +146,11 @@ function funcaoAdicionarProduto() {
         campoProductPrice.value = "";
         btnAddProduct.setAttribute("disabled", true);
         erro.innerHTML = ``;
+        for (var i = 0; i < arraypedidoitens.length; i++) {
+            arrPed.push(arraypedidoitens[i]);
+        }
         exibirItensPedido(arraypedidoitens);
+        arraypedidoitens = [];
 
     }
 };
@@ -154,19 +166,10 @@ function exibirItensPedido(arrItens) {
                         <td>${item.quantidade}</td>
                         <td>R$${item.preco}</td>
                     </tr>`;
-        valorTotalPedido += item.preco;
-        salvapedido = {
-            codigo: item.codigo,
-            item: item.item,
-            quantidade: item.quantidade,
-            preco: item.preco,
-            numero: nPedido
-        }
-    })
-    arrEditar.push(salvapedido);
-    totalPedido.innerHTML = `VALOR TOTAL DO PEDIDO: R$${valorTotalPedido}`;
-    arraypedidoitens = [];
-
+        valorTotalPedido = valorTotalPedido + item.preco;
+    });
+    totalPedido.innerHTML = `VALOR TOTAL DO PEDIDO: R$${arrPed.reduce((prev, elem) => prev + elem.preco, 0)}`;
+    arrItens = [];
 }
 function funcaoCancelar() {
     addedItems.innerHTML = "";
@@ -181,35 +184,22 @@ function funcaoCancelar() {
 function funcaoSalvaPedido() {
     sessao1.setAttribute("class", "active");
     sessao2.setAttribute("class", "inactive");
-
     arrPedido.push({
         numero: nPedido,
-        itens: arraypedidoitens,
+        itens: arrPed,
         tipo: document.querySelector('input[name="consumo"]:checked').value,
-        status: `<select id="filter_status_pedido">
-        <option>Recebido</option>
-        <option>Pronto</option>
-        <option>Entregue</option>
-            </select>`
+        status: "Recebido"
     });
-    arrFiltro.push({
-        numero: nPedido,
-        itens: arraypedidoitens,
-        tipo: document.querySelector('input[name="consumo"]:checked').value,
-        status: `<select id="filter_status_pedido">
-        <option>Recebido</option>
-        <option>Pronto</option>
-        <option>Entregue</option>
-            </select>`
-    });
-    arraypedidoitens = [];
     exibirTabelaPedidos(arrPedido);
     nPedido += 1;
-    console.log(arrEditar)
     addedItems.innerHTML = "";
     totalPedido.innerHTML = "";
+
 };
 function exibirTabelaPedidos(arrTotal) {
+    for (var i = 0; i < arrTotal.length; i++) {
+        arrSalvaPedidos.push(arrTotal[i]);
+    }
     let HTML = "<tr>";
     arrTotal.forEach(function (item) {
         let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
@@ -225,23 +215,103 @@ function exibirTabelaPedidos(arrTotal) {
         <td>${item.status}</td></tr>`
     })
     savedOrder.innerHTML += HTML;
+    arrPed = [];
 
 };
-let arrStatus = [];
-function funcaoOBterStatus() {
-    let statusFiltrado = document.querySelectorAll('#filter_status_pedido');
-    statusFiltrado.forEach((selected) => { arrStatus.push(selected.value) })
-    console.log(arrStatus);
+function funcaoStatus() {
+    selectStatus.removeAttribute('hidden');
+    btnRemove.setAttribute("hidden","");
+    btnStatus.setAttribute("hidden","");
+    var arr = [];
+    let checkboxes = document.querySelectorAll('input[name="pedidoID"]:checked');
+    checkboxes.forEach((checkbox) => {
+        arr.push(checkbox.id);
+    })
+    filtrado = arr.map(function (item) { return item });
+    arrSalvaPedidos = arrSalvaPedidos.filter((pedido) => {
+        const estaSelecionado = filtrado.some((checked) => checked == pedido.numero);
+        if (estaSelecionado) {
+            return pedido
+        }
+    })
+    for (var i = 0; i < arrSalvaPedidos.length; i++) {
+        arrTroca.push(arrSalvaPedidos[i]);
+    }
+    
 }
+function funcaoConfirmarTroca(){
+    filtroselecionado = filtroSelect.value;
+    corrigeFiltro();
+    savedOrder.innerHTML = `<tr>
+    <th>Nº do pedido</th>
+    <th>Itens</th>
+    <th>Tipo</th>
+    <th>Valor</th>
+    <th>Status</th>
+</tr><tr>`;
+    let HTML = "<tr>";
+    arrTroca.forEach(function (item) {
+        let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
+        HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
+        HTML += "<td>"
+        itensnopedido.forEach((elemento) => {
+            HTML += `${elemento}<br>`
+        })
+        HTML += "</td>"
+        HTML += `
+        <td>${item.tipo}</td>
+        <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
+        <td>${filtroselecionado}</td></tr>`
+    })
+    savedOrder.innerHTML += HTML;
+    formFilter.removeAttribute("hidden")
+    campoOptions.setAttribute("hidden", "");
+    selectStatus.setAttribute('hidden',"");
+    btnRemove.removeAttribute("hidden");
+    btnStatus.removeAttribute("hidden");
+    arrTroca = [];
+    
+}
+// function corrigeFiltro(){
+//     var arr = [];
+//     let checkboxes = document.querySelectorAll('input[name="pedidoID"]:checked');
+//     checkboxes.forEach((checkbox) => {
+//         arr.push(checkbox.id);
+//     })
+//     filtrado = arr.map(function (item) { return item });
+//     arrSalvaPedidos = arrSalvaPedidos.filter((pedido) => {
+//         const estaSelecionado = filtrado.some((checked) => checked == pedido.numero);
+//         if (!estaSelecionado) {
+//             return pedido
+//         }
+//     })
+//     for (var i = 0; i < arrSalvaPedidos.length; i++) {
+//         arrCorrige.push(arrSalvaPedidos[i]);}
+//         let HTML = "<tr>";
+//         arrCorrige.forEach(function (item) {
+//             let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
+//             HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
+//             HTML += "<td>"
+//             itensnopedido.forEach((elemento) => {
+//                 HTML += `${elemento}<br>`
+//             })
+//             HTML += "</td>"
+//             HTML += `
+//             <td>${item.tipo}</td>
+//             <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
+//             <td>${item.status}</td></tr>`
+//         })
+//         savedOrder.innerHTML += HTML;
+    
+// }
 function funcaoFiltrar() {
     let valorSelectFilter = filtroTipo.value;
     let valorStatus = filterStatus.value;
-    let filtradoTipo = arrFiltro.filter(function (item) {
+    let filtradoTipo = arrSalvaPedidos.filter(function (item) {
         return item.tipo == valorSelectFilter.toLowerCase() || valorSelectFilter == ""
     })
-    funcaoOBterStatus();
     filtradoTipo = filtradoTipo.filter(function (item) {
-        return arrStatus == valorStatus || valorStatus == ""
+        return item.status == valorStatus || valorStatus == ""
     })
     if (filtradoTipo !== []) {
         savedOrder.innerHTML = ``;
@@ -263,7 +333,7 @@ function funcaoFiltrar() {
             HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td>${arrStatus}</td></tr>`
+        <td>${item.status}</td></tr>`
             arrStatus = [];
         })
         savedOrder.innerHTML += HTML;
@@ -288,7 +358,7 @@ function funcaoFiltrar() {
             HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td>${arrStatus}</td></tr>`
+        <td>${item.status}</td></tr>`
         })
         savedOrder.innerHTML += HTML;
 
@@ -297,73 +367,59 @@ function funcaoFiltrar() {
 };
 function funcaoCheckbox() {
     let checkboxes = document.querySelectorAll('input[name="pedidoID"]:checked')
-    let valores = [];
+    let valoresMarcados = [];
     checkboxes.forEach((checkbox) => {
-        valores.push(checkbox.id);
+        valoresMarcados.push(checkbox.id);
+
     })
-    if (valores.length > 0) {
+    if (valoresMarcados.length > 0) {
         formFilter.setAttribute("hidden", "")
         campoOptions.removeAttribute("hidden");
     } else {
         formFilter.removeAttribute("hidden")
         campoOptions.setAttribute("hidden", "");
     }
-    console.log(valores);
-}
-function funcaoEditarPedido() {
-    sessao1.setAttribute("class", "inactive");
-    sessao2.setAttribute("class", "active");
-    nPedido += -1;
-    addedItems.innerHTML = `<tr>
-                                <th>Código</th>
-                                <th>Produto</th>
-                                <th>Quantidade</th>
-                                <th>Valor</th>
-                            </tr>`;
-    totalPedido.innerHTML = "";
-    let pedidoSelecionado = document.getElementsByName('pedidoID');
-    var arr = [];
-    for (var i = pedidoSelecionado.length; i--; arr.unshift(pedidoSelecionado[i]));
-    let idFiltrado = arr.map(function (item) { return item.id })
-    let filtrado = arrEditar.filter(function (item) {
-        return item.numero == idFiltrado
-    })
-    filtrado.forEach(function (item) {
-        let valorTotalPedido = 0;
-        addedItems.innerHTML += `
-                    
-        <tr>
-            <td>${item.codigo}</td>
-            <td>${item.item}</td>
-            <td>${item.quantidade}</td>
-            <td>R$${item.preco}</td>
-        </tr>`;
-        valorTotalPedido += item.preco;
-        totalPedido.innerHTML = `VALOR TOTAL DO PEDIDO: R$${valorTotalPedido}`;
-    })
 
-
-    console.log(filtrado);
 }
 function funcaoRemover() {
+    var arr = [];
     let checkboxes = document.querySelectorAll('input[name="pedidoID"]:checked');
-    // checkboxes.forEach((checkbox) => {
-    //     checkbox.id
-    // })
-    console.log(arrPedido);
-    // let pedidoSelecionado = document.getElementsByName('pedidoID');
-    // var arr = [];
-    // for(var i = pedidoSelecionado.length; i--; arr.unshift(pedidoSelecionado[i]));
-    // let idFiltrado = arr.map(function(item){return item.id});
-    // let itemlistado = document.getElementById(idFiltrado);
-    // var celula = itemlistado.parentElement;
-    // var linha = celula.parentElement;
-    // console.log(linha)
-    // linha.remove();
-    // formFilter.removeAttribute("hidden")
-    // campoOptions.setAttribute("hidden","");
+    checkboxes.forEach((checkbox) => {
+        arr.push(checkbox.id);
+    })
+    filtrado = arr.map(function (item) { return item });
+    arrSalvaPedidos = arrSalvaPedidos.filter((pedido) => {
+        const estaSelecionado = filtrado.some((checked) => checked == pedido.numero);
+        if (!estaSelecionado) {
+            return pedido
+        }
+    })
+    console.log(arrSalvaPedidos);
 
-
+    savedOrder.innerHTML = `<tr>
+    <th>Nº do pedido</th>
+    <th>Itens</th>
+    <th>Tipo</th>
+    <th>Valor</th>
+    <th>Status</th>
+</tr><tr>`;
+    let HTML = "<tr>";
+    arrSalvaPedidos.forEach(function (item) {
+        let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
+        HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
+        HTML += "<td>"
+        itensnopedido.forEach((elemento) => {
+            HTML += `${elemento}<br>`
+        })
+        HTML += "</td>"
+        HTML += `
+        <td>${item.tipo}</td>
+        <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
+        <td>${item.status}</td></tr>`
+    })
+    savedOrder.innerHTML += HTML;
+    formFilter.removeAttribute("hidden")
+    campoOptions.setAttribute("hidden", "");
 }
 
 btnNewOrder.addEventListener("click", () => funcaoNovoPedido());
@@ -373,5 +429,6 @@ btnPesquisarProduto.addEventListener("click", () => funcaoPesquisarProduto());
 btnSave.addEventListener("click", () => funcaoSalvaPedido());
 filtroTipo.addEventListener("change", () => funcaoFiltrar());
 filterStatus.addEventListener("change", () => funcaoFiltrar());
-btnEdit.addEventListener("click", () => funcaoEditarPedido());
 btnRemove.addEventListener("click", () => funcaoRemover());
+btnStatus.addEventListener("click", ()=> funcaoStatus());
+btnSetStatus.addEventListener("click", ()=> funcaoConfirmarTroca());
