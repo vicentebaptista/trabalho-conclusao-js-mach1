@@ -212,98 +212,22 @@ function exibirTabelaPedidos(arrTotal) {
         HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td>${item.status}</td></tr>`
+        <td><button type="button" class="${item.numero}" onclick = "funcaoStatus()"</button>${item.status}</td></tr>`
+        console.log(item.status)
     })
+    
     savedOrder.innerHTML += HTML;
     arrPed = [];
 
 };
-function funcaoStatus() {
-    selectStatus.removeAttribute('hidden');
-    btnRemove.setAttribute("hidden","");
-    btnStatus.setAttribute("hidden","");
-    var arr = [];
-    let checkboxes = document.querySelectorAll('input[name="pedidoID"]:checked');
-    checkboxes.forEach((checkbox) => {
-        arr.push(checkbox.id);
-    })
-    filtrado = arr.map(function (item) { return item });
-    arrSalvaPedidos = arrSalvaPedidos.filter((pedido) => {
-        const estaSelecionado = filtrado.some((checked) => checked == pedido.numero);
-        if (estaSelecionado) {
-            return pedido
-        }
-    })
-    for (var i = 0; i < arrSalvaPedidos.length; i++) {
-        arrTroca.push(arrSalvaPedidos[i]);
-    }
-    
-}
-function funcaoConfirmarTroca(){
-    filtroselecionado = filtroSelect.value;
-    corrigeFiltro();
-    savedOrder.innerHTML = `<tr>
-    <th>Nº do pedido</th>
-    <th>Itens</th>
-    <th>Tipo</th>
-    <th>Valor</th>
-    <th>Status</th>
-</tr><tr>`;
-    let HTML = "<tr>";
-    arrTroca.forEach(function (item) {
-        let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
-        HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
-        HTML += "<td>"
-        itensnopedido.forEach((elemento) => {
-            HTML += `${elemento}<br>`
-        })
-        HTML += "</td>"
-        HTML += `
-        <td>${item.tipo}</td>
-        <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td>${filtroselecionado}</td></tr>`
-    })
-    savedOrder.innerHTML += HTML;
-    formFilter.removeAttribute("hidden")
-    campoOptions.setAttribute("hidden", "");
-    selectStatus.setAttribute('hidden',"");
-    btnRemove.removeAttribute("hidden");
-    btnStatus.removeAttribute("hidden");
-    arrTroca = [];
-    
-}
-// function corrigeFiltro(){
-//     var arr = [];
-//     let checkboxes = document.querySelectorAll('input[name="pedidoID"]:checked');
-//     checkboxes.forEach((checkbox) => {
-//         arr.push(checkbox.id);
-//     })
-//     filtrado = arr.map(function (item) { return item });
-//     arrSalvaPedidos = arrSalvaPedidos.filter((pedido) => {
-//         const estaSelecionado = filtrado.some((checked) => checked == pedido.numero);
-//         if (!estaSelecionado) {
-//             return pedido
-//         }
-//     })
-//     for (var i = 0; i < arrSalvaPedidos.length; i++) {
-//         arrCorrige.push(arrSalvaPedidos[i]);}
-//         let HTML = "<tr>";
-//         arrCorrige.forEach(function (item) {
-//             let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
-//             HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
-//             HTML += "<td>"
-//             itensnopedido.forEach((elemento) => {
-//                 HTML += `${elemento}<br>`
-//             })
-//             HTML += "</td>"
-//             HTML += `
-//             <td>${item.tipo}</td>
-//             <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-//             <td>${item.status}</td></tr>`
-//         })
-//         savedOrder.innerHTML += HTML;
-    
+// function funcaoStatus() {
+// let idPedido = arrSalvaPedidos.map(function(item){return item.numero})
+// botaoAlterar = document.getElementsByClassName(idPedido)
+// botaoAlterar = [0];
+// if{botaoAlterar}
 // }
+
+    
 function funcaoFiltrar() {
     let valorSelectFilter = filtroTipo.value;
     let valorStatus = filterStatus.value;
@@ -333,7 +257,7 @@ function funcaoFiltrar() {
             HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td>${item.status}</td></tr>`
+        <td><button type="button" class="btn_status" id="${item.numero}">${item.status}</button></td></tr>`
             arrStatus = [];
         })
         savedOrder.innerHTML += HTML;
@@ -415,7 +339,7 @@ function funcaoRemover() {
         HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td>${item.status}</td></tr>`
+        <td><button type="button" class="btn_status" id="${item.numero}">${item.status}</button></td></tr>`
     })
     savedOrder.innerHTML += HTML;
     formFilter.removeAttribute("hidden")
@@ -430,5 +354,4 @@ btnSave.addEventListener("click", () => funcaoSalvaPedido());
 filtroTipo.addEventListener("change", () => funcaoFiltrar());
 filterStatus.addEventListener("change", () => funcaoFiltrar());
 btnRemove.addEventListener("click", () => funcaoRemover());
-btnStatus.addEventListener("click", ()=> funcaoStatus());
-btnSetStatus.addEventListener("click", ()=> funcaoConfirmarTroca());
+
