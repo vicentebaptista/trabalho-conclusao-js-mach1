@@ -13,15 +13,16 @@
         <div class="main_logo"><img src="/assets/logo_smach.jpeg" alt=""></div>
         <div class="op_info">
             <p>Operador: Vicente</p>
-            <p>Data-Hora: 14/10/2022 - 09:07</p>
+            <p id="date"></p>
             <p>Versão 1.0</p>
         </div>
     </section>
     <section class="sec2 active" id="sessao1">
         <h1>Todos os pedidos</h1>
         <button id="button_new_order">Novo pedido</button>
+        <button id="btn_product_registration">Cadastro de produtos</button>
         <form id="form_filter">
-            <label>Filtrar por
+            <label>Filtrar por <br>
                 <select name="Tipo" id="filter_type">
                     <option value="">Todos</option>
                     <option value="Delivery">Delivery</option>
@@ -43,16 +44,16 @@
             <table id="order_items">
                 <tr>
                     <th>Nº do pedido</th>
-                    <th>Itens</th>
+                    <th class="td_itens">Itens</th>
                     <th>Tipo</th>
                     <th>Valor</th>
                     <th>Status</th>
                 </tr>
             </table>
             <div class="orders_core">
-                <img src="/assets/img_sem_pedido.jpeg" alt="">
+                <img src="/assets/img_sem_pedido.jpeg" id="no_order_img"alt="">
             </div>
-            <span>Copyright</span>
+            <span class="copyright">Copyright Vicente Baptista sistemas feios</span>
         </div>
     </section>
     <section class="sec3 inactive" id="sessao2">
@@ -68,15 +69,17 @@
                 <input type="number" id="product_code_input" placeholder="Código do produto">
                 <button type="button" id="button_search">Buscar</button>
             </label><span id="erro"></span><br>
-            <label>Quantidade
-                <input type="number" id="product_qty_input" placeholder="0">
-            </label>
-            <label>Produto
-                <input type="text" disabled id="product_name_output" placeholder="Nome do produto">
-            </label>
-            <label>Preço
-                <input type="text" disabled id="product_price_output" placeholder="R$0.00">
-            </label>
+            <div class="product_field">
+                <label class="label_product">Quantidade
+                    <input type="number" id="product_qty_input" placeholder="0">
+                </label>
+                <label class="label_product product_name">Produto
+                    <input type="text" disabled id="product_name_output" placeholder="Nome do produto">
+                </label>
+                <label class="label_product">Preço
+                    <input type="text" disabled id="product_price_output" placeholder="R$0.00">
+                </label>
+            </div>
         </form>
         <button id="button_add_product" disabled>+ Adicionar Produto</button>
         <div>
@@ -91,14 +94,60 @@
                 </tbody>
             </table>
             <div class="orders_core">
-                <img src="/assets/img_sem_pedido.jpeg" id="no_order_img" alt="">
+                <img src="/assets/img_sem_pedido.jpeg" id="no_ordr_img" alt="">
             </div>
-            <div id="total_amount"></div>
             <div class="orders_options">
+                <div id="total_amount"></div>
                 <button id="button_orders_cancel">Cancelar</button>
                 <button id="button_order_save">Salvar pedido</button>
             </div>
-            <span>Copyright Vicente Neto e talvez Lorena Bastos</span>
+            <span class="copyright">Copyright Vicente Neto e talvez Lorena Bastos</span>
+        </div>
+    </section>
+    <section class="sec4 inactive" id="sessao3">
+        <h2>Cadastro de Produtos</h2>
+        
+        <div id="registration_btns">
+            <button id="set_product">Cadastrar produto</button>
+        </div>
+        <div id="table_registration" class="active" >
+            <h3>Todos os produtos</h3>
+            <table id="all_items">
+                <tbody>
+                    <tr>
+                        <th>Código</th>
+                        <th>Item</th>
+                        <th>Preço</th>
+                        <th>Ações</th>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" id="main_menu">Voltar</button>
+        </div>
+        <div id="new_product" class="inactive">
+            <form action="#">
+                <label>Códig
+                    <input type="text" id="new_cod" placeholder="Código do produto">
+                </label>
+                <label>Item
+                    <input type="text" id="new_item" placeholder="Nome do produto">
+                </label>
+                <label>Preço
+                    <input type="number" id="new_price" placeholder="Preço do produto">
+                </label>
+                <button type="button" id="btn_save_new_product">Salvar produto</button>
+                <button id="cancel_new_registration">Cancelar</button>
+            </form>
+            <table id="new_items">
+                <tbody>
+                    <tr>
+                        <th>Código</th>
+                        <th>Produto</th>
+                        <th>Preço</th>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="finish_registration">Finalizar registro</button>
         </div>
     </section>
    </div>

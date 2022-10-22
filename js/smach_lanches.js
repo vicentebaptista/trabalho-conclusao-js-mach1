@@ -76,8 +76,26 @@ let selectStatus = document.getElementById('change_status_select');
 let btnStatus = document.getElementById('change_status');
 let btnSetStatus = document.getElementById('set_status');
 let filtroSelect = document.getElementById('filtro_select');
+let btnProductRegistration = document.getElementById('btn_product_registration');
+let sessao3 = document.getElementById('sessao3');
+let botoesRegistro = document.getElementById('registration_btns');
+let botaoNovoProduto = document.getElementById('set_product');
+let tabelaCadastrados = document.getElementById('table_registration');
+let telaCadastroProduto = document.getElementById('new_product');
+let novoCod = document.getElementById('new_cod');
+let novoItem = document.getElementById('new_item');
+let novoPreco = document.getElementById('new_price');
+let botaoSalvaProduto = document.getElementById('btn_save_new_product');
+let botaoCancelaRegistro = document.getElementById('cancel_new_registration')
+let botaoFinalizaRegistro = document.getElementById('finish_registration');
+let newItemsTable = document.getElementById('new_items');
+let tableItems = document.getElementById('all_items');
+let btnMenuPrincipal = document.getElementById('main_menu');
+let dataAtual = document.getElementById('date')
+const dataHora = new Date().toLocaleString();
 let nPedido = Math.floor(Math.random() * 5000);
 let arraypedidoitens = [];
+onload = insereHora();
 
 let arrCorrige = [];
 let arrTroca = [];
@@ -85,7 +103,6 @@ let arrFiltro = [];
 let arrPedido = [];
 let arrPed = [];
 let arrSalvaPedidos = [];
-let arrStatus = [];
 function funcaoNovoPedido() {
     sessao1.setAttribute("class", "inactive");
     sessao2.setAttribute("class", "active");
@@ -99,7 +116,9 @@ function funcaoNovoPedido() {
     arrTotal = [];
     arrPedido = [];
 }
-
+function insereHora(){
+    dataAtual.innerHTML = `Data:${dataHora}`;
+}
 
 function funcaoPesquisarProduto() {
     let codigoproduto = codInserido.value;
@@ -157,6 +176,9 @@ function funcaoAdicionarProduto() {
 function exibirItensPedido(arrItens) {
 
     let valorTotalPedido = 0;
+    if(arrItens !== []){
+        blankImg.setAttribute('class','hidden');
+    }else{blankImg.removeAttribute("hidden")}
     arrItens.forEach(function (item) {
         addedItems.innerHTML += `
                     
@@ -204,7 +226,7 @@ function exibirTabelaPedidos(arrTotal) {
     arrTotal.forEach(function (item) {
         let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
         HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
-        HTML += "<td>"
+        HTML += "<td class='td_itens'>"
         itensnopedido.forEach((elemento) => {
             HTML += `${elemento}<br>`
         })
@@ -212,7 +234,7 @@ function exibirTabelaPedidos(arrTotal) {
         HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td><button type="button" class="${item.numero}" onclick = "funcaoStatus()"</button>${item.status}</td></tr>`
+        <td><button type="button" class="${item.numero}" onclick = "trocaStatus()"</button>${item.status}</td></tr>`
         console.log(item.status)
     })
     
@@ -220,14 +242,7 @@ function exibirTabelaPedidos(arrTotal) {
     arrPed = [];
 
 };
-// function funcaoStatus() {
-// let idPedido = arrSalvaPedidos.map(function(item){return item.numero})
-// botaoAlterar = document.getElementsByClassName(idPedido)
-// botaoAlterar = [0];
-// if{botaoAlterar}
-// }
-
-    
+  
 function funcaoFiltrar() {
     let valorSelectFilter = filtroTipo.value;
     let valorStatus = filterStatus.value;
@@ -241,7 +256,7 @@ function funcaoFiltrar() {
         savedOrder.innerHTML = ``;
         let HTML = `<tr>
         <th>Nº do pedido</th>
-        <th>Itens</th>
+        <th class='td_itens'>Itens</th>
         <th>Tipo</th>
         <th>Valor</th>
         <th>Status</th>
@@ -257,7 +272,7 @@ function funcaoFiltrar() {
             HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td><button type="button" class="btn_status" id="${item.numero}">${item.status}</button></td></tr>`
+        <td><button type="button" class="${item.numero}" onclick = "trocaStatus()"</button>${item.status}</td></tr>`
             arrStatus = [];
         })
         savedOrder.innerHTML += HTML;
@@ -266,7 +281,7 @@ function funcaoFiltrar() {
         savedOrder.innerHTML = ``;
         let HTML = `<tr>
         <th>Nº do pedido</th>
-        <th>Itens</th>
+        <th class='td_itens'>Itens</th>
         <th>Tipo</th>
         <th>Valor</th>
         <th>Status</th>
@@ -282,13 +297,14 @@ function funcaoFiltrar() {
             HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td>${item.status}</td></tr>`
+        <td><button type="button" class="${item.numero}" onclick = "trocaStatus()"</button>${item.status}</td></tr>`
         })
         savedOrder.innerHTML += HTML;
 
     }
 
 };
+
 function funcaoCheckbox() {
     let checkboxes = document.querySelectorAll('input[name="pedidoID"]:checked')
     let valoresMarcados = [];
@@ -318,11 +334,13 @@ function funcaoRemover() {
             return pedido
         }
     })
-    console.log(arrSalvaPedidos);
+    if(arrSalvaPedidos == []){
+        blankImg.removeAttribute("class","hidden")
+    }
 
     savedOrder.innerHTML = `<tr>
     <th>Nº do pedido</th>
-    <th>Itens</th>
+    <th class='td_itens'>Itens</th>
     <th>Tipo</th>
     <th>Valor</th>
     <th>Status</th>
@@ -345,6 +363,200 @@ function funcaoRemover() {
     formFilter.removeAttribute("hidden")
     campoOptions.setAttribute("hidden", "");
 }
+let arrTrocaStatus = [];
+function trocaStatus(){
+    let classePedido = arrSalvaPedidos.map(function(item){return item.numero})
+    console.log(classePedido)
+    arrSalvaPedidos.forEach((value)=>{
+        const trocaStatus = classePedido.some((clicados)=> clicados == value.numero)
+        if(trocaStatus){
+            if(value.status === "Recebido"){
+                value.status = "Pronto";
+            } else (value.status = "Entregue")
+        }
+    })
+    for (var i = 0; i < arrSalvaPedidos.length; i++) {
+        arrTrocaStatus.push(arrSalvaPedidos[i]);}
+   visualizarTabela()
+}
+let visualizarTabela = () =>{
+    savedOrder.innerHTML = "";
+    let HTML = `<tr>
+    <th>Nº do pedido</th>
+    <th class='td_itens'>Itens</th>
+    <th>Tipo</th>
+    <th>Valor</th>
+    <th>Status</th>
+</tr><tr>`;
+    arrTrocaStatus.forEach(function (item) {
+        let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
+        HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
+        HTML += "<td>"
+        itensnopedido.forEach((elemento) => {
+            HTML += `${elemento}<br>`
+        })
+        HTML += "</td>"
+        HTML += `
+    <td>${item.tipo}</td>
+    <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
+    <td><button type="button" class="${item.numero}" onclick = "trocaStatus()"</button>${item.status}</td></td></tr>`
+    })
+    savedOrder.innerHTML += HTML;
+    arrTrocaStatus = [];
+}
+
+function funcaoTelaRegistro(){
+    sessao1.setAttribute("class","inactive");
+    sessao3.setAttribute("class","active");
+    exibeCadastrados();
+}
+function funcaoExibeCampos(){
+    botoesRegistro.setAttribute("class","hidden");
+    tabelaCadastrados.setAttribute('class','inactive');
+    telaCadastroProduto.setAttribute('class','active');
+    novoCod.value = "";
+    novoItem.value = "";
+    novoPreco.value = "";
+}
+function exibeCadastrados(){
+    tableItems.innerHTML = `<tr>
+    <th>Código</th>
+    <th>Item</th>
+    <th>Preço</th>
+    <th>Ações</th>
+</tr>`
+    listaProdutos.forEach(function(item){
+        tableItems.innerHTML += `<tr><td>${item.codigo}</td>
+        <td>${item.produto}</td>
+        <td>R$${item.preco}<td>
+        <td><button id="${item.codigo}" class="btn_editar">Editar</button>
+        <button id="${item.codigo * 2}" name="botaoID" class="btn_excluir">Excluir</button></td><tr>`
+    })
+}
+let itemNovo = [];
+let arrNovoCadastro = [];
+function funcaoAdicionaNovoProduto(){
+    codigoInserido = novoCod.value;
+    precoInserido = novoPreco.value;
+    itemInserido = novoItem.value;
+    let codigosCadastrados = [];
+    listaProdutos.forEach(function(item){return codigosCadastrados.push(item.codigo)})
+    
+    itemNovo.push({
+        codigo:codigoInserido,
+        produto:itemInserido,
+        preco:precoInserido
+    })
+    let checaProduto = codigosCadastrados.some((value) => value == itemNovo.map(function(item){return item.codigo}))
+    if(checaProduto){
+         alert("Código já cadastrado para outro produto");
+         return itemNovo = [];
+        
+    }
+    funcaoExibeNovosItens(itemNovo);
+    for (var i = 0; i < itemNovo.length; i++) {
+        arrNovoCadastro.push(itemNovo[i]);}
+    itemNovo = [];
+}
+function funcaoExibeNovosItens(arrNovosItens){
+    arrNovosItens.forEach(function(item){
+        newItemsTable.innerHTML += `<tr><td>${item.codigo}</td>
+        <td>${item.produto}</td>
+        <td>${item.preco}<td>`
+    })
+}
+function funcaoFinalizaRegistro(){
+    for (var i = 0; i < arrNovoCadastro.length; i++) {
+        listaProdutos.push(arrNovoCadastro[i]);}
+    tableItems.innerHTML = `<tr>
+    <th>Código</th>
+    <th>Item</th>
+    <th>Preço</th>
+    <th>Ações</th>
+</tr>`;
+    listaProdutos.forEach(function(item){
+        tableItems.innerHTML += `<tr><td>${item.codigo}</td>
+        <td>${item.produto}</td>
+        <td>R$${item.preco}<td>
+        <td><button id="${item.codigo}" class="btn_editar">Editar</button>
+        <button id="${item.codigo * 2}" name="botaoID" class="btn_excluir">Excluir</button></td><tr>`})
+        botoesRegistro.removeAttribute('class','hidden');
+        tabelaCadastrados.setAttribute('class','active');
+        telaCadastroProduto.setAttribute('class','inactive');
+        newItemsTable.innerHTML = `<tr>
+        <th>Código</th>
+        <th>Produto</th>
+        <th>Preço</th>
+    </tr>`;
+    arrNovoCadastro = [];
+}
+function funcaoVoltar(){
+    sessao1.setAttribute("class","active");
+    sessao3.setAttribute("class","inactive");
+    newItemsTable.innerHTML = `<tr>
+        <th>Código</th>
+        <th>Produto</th>
+        <th>Preço</th>
+    </tr>`;
+}
+var tabela = document.querySelector("#all_items");
+let arrBotao = [];
+tabela.addEventListener("click", function funcaoExcluir(event){
+    var botaoClicado = event.target;
+    if(botaoClicado.classList.contains("btn_excluir")){
+    botaoClicado = botaoClicado.id;
+    arrBotao.push(botaoClicado);
+    listaProdutos = listaProdutos.filter((produto) => {
+        const estaSelecionado = arrBotao.some((value) => (value / 2) == produto.codigo);
+        if (!estaSelecionado) {
+            return produto
+        }
+    })
+    tableItems.innerHTML = `<tr>
+    <th>Código</th>
+    <th>Item</th>
+    <th>Preço</th>
+    <th>Ações</th>
+</tr>`
+    listaProdutos.forEach(function(item){
+        tableItems.innerHTML += `<tr><td>${item.codigo}</td>
+        <td>${item.produto}</td>
+        <td>R$${item.preco}<td>
+        <td><button id="${item.codigo}" class="btn_editar">Editar</button>
+        <button id="${item.codigo * 2}" name="botaoID" class="btn_excluir">Excluir</button></td><tr>`
+    })
+    arrBotao = [];
+}
+})
+    tabela.addEventListener("click", function funcaoEditar(event){
+    
+    var botaoClicado = event.target;
+    if(botaoClicado.classList.contains("btn_editar")){
+    botaoClicado = botaoClicado.id;
+    arrBotao.push(botaoClicado);
+    let arrEdicao = [];
+    arrEdicao = listaProdutos.filter((produto) => {
+        const estaSelecionado = arrBotao.some((value) => value == produto.codigo);
+        if (estaSelecionado) {
+            return produto
+        }
+    })
+    botoesRegistro.setAttribute("class","hidden");
+    tabelaCadastrados.setAttribute('class','inactive');
+    telaCadastroProduto.setAttribute('class','active');
+    novoCod.value = arrEdicao.map(function(item){return item.codigo})
+    novoItem.value = arrEdicao.map(function(item){return item.produto})
+    novoPreco.value = arrEdicao.map(function(item){return item.preco})
+    let codigoEditado = arrEdicao.map(function(item){return item.codigo})
+    listaProdutos = listaProdutos.filter((produto) => {
+        const estaSelecionado = codigoEditado.some((value) => value == produto.codigo);
+        if (!estaSelecionado) {
+            return produto
+        }
+    })
+    console.log(listaProdutos);}
+  
+})
 
 btnNewOrder.addEventListener("click", () => funcaoNovoPedido());
 btnCancel.addEventListener("click", () => funcaoCancelar());
@@ -354,4 +566,8 @@ btnSave.addEventListener("click", () => funcaoSalvaPedido());
 filtroTipo.addEventListener("change", () => funcaoFiltrar());
 filterStatus.addEventListener("change", () => funcaoFiltrar());
 btnRemove.addEventListener("click", () => funcaoRemover());
-
+btnProductRegistration.addEventListener("click", ()=> funcaoTelaRegistro());
+botaoNovoProduto.addEventListener("click",()=> funcaoExibeCampos());
+botaoSalvaProduto.addEventListener("click",()=> funcaoAdicionaNovoProduto());
+botaoFinalizaRegistro.addEventListener("click", ()=> funcaoFinalizaRegistro());
+btnMenuPrincipal.addEventListener("click",()=> funcaoVoltar());
