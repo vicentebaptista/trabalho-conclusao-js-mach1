@@ -96,33 +96,35 @@ const dataHora = new Date().toLocaleString();
 let nPedido = Math.floor(Math.random() * 5000);
 let arraypedidoitens = [];
 onload = insereHora();
-
-let arrCorrige = [];
-let arrTroca = [];
 let arrFiltro = [];
 let arrPedido = [];
 let arrPed = [];
-let arrSalvaPedidos = [];
-function funcaoNovoPedido() {
-    sessao1.setAttribute("class", "inactive");
+let arrGlobal = [];
+// =============================================================================================
+//                            DECLARAÇÃO DAS VARIAVEIS
+// =============================================================================================
+// =============================================================================================
+//                    TELA DE INICIAL + CADASTRO DE ITENS NO PEDIDO 
+// =============================================================================================
+function funcaoNovoPedido() {                                   // Esta função é iniciada quando o usuario clica em "Novo Pedido" e é responsável                                                                
+    sessao1.setAttribute("class", "inactive");                 //                por mudar a tela para o ambiente de cadastro de pedidos
     sessao2.setAttribute("class", "active");
-    addedItems.innerHTML = `<tr>
+    addedItems.innerHTML = `<tr>                
                                 <th>Código</th>
                                 <th>Produto</th>
                                 <th>Quantidade</th>
-                                <th>Valor</th>
-                            </tr>`;
-    totalPedido.innerHTML = "";
-    arrTotal = [];
-    arrPedido = [];
+                                <th>Valor</th> 
+                            </tr>`; //Reseta o header da tabela de cadastro de pedidos
+    totalPedido.innerHTML = "";    //Reseta o valor somado do pedido atual                     
+    arrPedido = [];                                  
 }
 function insereHora(){
-    dataAtual.innerHTML = `Data:${dataHora}`;
+    dataAtual.innerHTML = `Data:${dataHora}`; //Insere data e hora na área do funcionário
 }
 
-function funcaoPesquisarProduto() {
+function funcaoPesquisarProduto() {       //Essa função realiza a pesquisa dos produtos baseado no código inserido e realiza as devidas validações
     let codigoproduto = codInserido.value;
-    let filtrado = listaProdutos.filter(function filtraitem(item) {
+    let filtrado = listaProdutos.filter(function filtraitem(item) { //Pega o código inserido e compara com os itens do array de produtos
         return item.codigo == codigoproduto;
     })
     let produtoFiltrado = filtrado.map(function (item) {
@@ -139,12 +141,12 @@ function funcaoPesquisarProduto() {
         erro.innerHTML = "";
         campoProductName.value = produtoFiltrado;
         campoProductPrice.value = `R$${precoFiltrado},00`;
-        btnAddProduct.removeAttribute("disabled");
+        btnAddProduct.removeAttribute("disabled"); //Insere as informações do produto na área indicada (input fields)
     }
 
 };
 
-function funcaoAdicionarProduto() {
+function funcaoAdicionarProduto() { //Funcao que inicia ao clicar em adicionar produto e é responsavel por criar o objeto que será inserido na tabela final
     let codigoproduto = codInserido.value;
     let quantidadeItem = campoQuantidade.value;
     let campoProduto = campoProductName.value;
@@ -152,8 +154,8 @@ function funcaoAdicionarProduto() {
     if (quantidadeItem.length === 0) {
         erro.innerHTML = `Quantidade não inserida` // verifica se foi inserida a quantidade de intens para adicionar ao pedido
     } else { // daqui pra baixo vai adicionar os itens na tabela do HTML
-        let precoFinal = parseFloat(campoPreco.replace('R$', "")) * parseFloat(quantidadeItem);
-        arraypedidoitens.push({
+        let precoFinal = parseFloat(campoPreco.replace('R$', "")) * parseFloat(quantidadeItem);//Retira o campo de cifrão do preço e realiza a conta de quantidade x preço
+        arraypedidoitens.push({ //objeto contendo o item adicionado pelo cliente
             codigo: codigoproduto,
             item: campoProduto,
             quantidade: quantidadeItem,
@@ -165,35 +167,31 @@ function funcaoAdicionarProduto() {
         campoProductPrice.value = "";
         btnAddProduct.setAttribute("disabled", true);
         erro.innerHTML = ``;
-        for (var i = 0; i < arraypedidoitens.length; i++) {
-            arrPed.push(arraypedidoitens[i]);
+        for (var i = 0; i < arraypedidoitens.length; i++) { //copia o objeto do produto para um array de pedido que será usado porteriormente
+            arrPed.push(arraypedidoitens[i]);               // pois sempre é zerado o objeto no final da função
         }
         exibirItensPedido(arraypedidoitens);
         arraypedidoitens = [];
 
     }
 };
-function exibirItensPedido(arrItens) {
-
-    let valorTotalPedido = 0;
+function exibirItensPedido(arrItens) { //Essa função escreve os itens salvos no array dentro da tabela HTML
     if(arrItens !== []){
         blankImg.setAttribute('class','hidden');
     }else{blankImg.removeAttribute("hidden")}
     arrItens.forEach(function (item) {
         addedItems.innerHTML += `
-                    
-                    <tr>
-                        <td>${item.codigo}</td>
-                        <td>${item.item}</td>
-                        <td>${item.quantidade}</td>
-                        <td>R$${item.preco}</td>
-                    </tr>`;
-        valorTotalPedido = valorTotalPedido + item.preco;
+                                <tr>
+                                    <td>${item.codigo}</td>
+                                    <td>${item.item}</td>
+                                    <td>${item.quantidade}</td>
+                                    <td>R$${item.preco}</td>
+                                </tr>`;
     });
-    totalPedido.innerHTML = `VALOR TOTAL DO PEDIDO: R$${arrPed.reduce((prev, elem) => prev + elem.preco, 0)}`;
-    arrItens = [];
+    totalPedido.innerHTML = `VALOR TOTAL DO PEDIDO: R$${arrPed.reduce((prev, elem) => prev + elem.preco, 0)}`; //Realiza a soma dos valores de todos os itens dentro do array de Pedido
+    arrItens = []; //Limpa novamente uma referencia de memória
 }
-function funcaoCancelar() {
+function funcaoCancelar() { //Função básica somente pra zerar os itens já inputados e voltar para pagina inicial
     addedItems.innerHTML = "";
     codInserido.value = "";
     totalPedido.innerHTML = ``;
@@ -203,33 +201,32 @@ function funcaoCancelar() {
 
 
 
-function funcaoSalvaPedido() {
+function funcaoSalvaPedido() { //Essa função troca novamente para tela inicial e grava todos os itens inseridos no pedido na tela inicial
     sessao1.setAttribute("class", "active");
     sessao2.setAttribute("class", "inactive");
-    arrPedido.push({
+    arrPedido.push({     //objeto gerado pra conter todos os pedidos, nota:o campo itens recebe o array com todos os itens do pedido(inlui cod, produto e preço)
         numero: nPedido,
         itens: arrPed,
         tipo: document.querySelector('input[name="consumo"]:checked').value,
         status: "Recebido"
     });
-    exibirTabelaPedidos(arrPedido);
+    exibirTabelaPedidos(arrPedido); //Envia o array e chama a função que grava o pedido na tela inicial
     nPedido += 1;
     addedItems.innerHTML = "";
     totalPedido.innerHTML = "";
 
 };
-function exibirTabelaPedidos(arrTotal) {
-    for (var i = 0; i < arrTotal.length; i++) {
-        arrSalvaPedidos.push(arrTotal[i]);
+function exibirTabelaPedidos(arrPedidoFinal) { //Função que grava o pedido na tabela da tela inicial
+    for (var i = 0; i < arrPedidoFinal.length; i++) {
+        arrGlobal.push(arrPedidoFinal[i]);
     }
     let HTML = "<tr>";
-    arrTotal.forEach(function (item) {
+    arrPedidoFinal.forEach(function (item) {
         let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
         HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
         HTML += "<td class='td_itens'>"
         itensnopedido.forEach((elemento) => {
-            HTML += `${elemento}<br>`
-        })
+            HTML += `${elemento}<br>`})
         HTML += "</td>"
         HTML += `
         <td>${item.tipo}</td>
@@ -238,20 +235,23 @@ function exibirTabelaPedidos(arrTotal) {
     })
     
     savedOrder.innerHTML += HTML;
-    arrPed = [];
+    arrPed = []; //Zera o array contendo os itens pra evitar bug na inserção dos itens (e dá bug mesmo)
 
 };
+// ===================================================================================================================
+//                                FIM DO CADASTRO DE PEDIDOS + FUNÇÃO FILTRAR
+// ===================================================================================================================
   
-function funcaoFiltrar() {
+function funcaoFiltrar() { //Função realiza o filtro dos campos select da tela inicial (Tipo e Status)
     let valorSelectFilter = filtroTipo.value;
     let valorStatus = filterStatus.value;
-    let filtradoTipo = arrSalvaPedidos.filter(function (item) {
+    let filtroSelect = arrGlobal.filter(function (item) {
         return item.tipo == valorSelectFilter.toLowerCase() || valorSelectFilter == ""
     })
-    filtradoTipo = filtradoTipo.filter(function (item) {
+    filtroSelect = filtroSelect.filter(function (item) {
         return item.status == valorStatus || valorStatus == ""
     })
-    if (filtradoTipo !== []) {
+    if (filtroSelect !== []) {
         savedOrder.innerHTML = ``;
         let HTML = `<tr>
         <th>Nº do pedido</th>
@@ -260,7 +260,7 @@ function funcaoFiltrar() {
         <th>Valor</th>
         <th>Status</th>
         </tr><tr>`;
-        filtradoTipo.forEach(function (item) {
+        filtroSelect.forEach(function (item) {
             let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
             HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
             HTML += "<td>"
@@ -276,7 +276,7 @@ function funcaoFiltrar() {
         })
         savedOrder.innerHTML += HTML;
     }
-    if (filtradoTipo == []) {
+    if (filtroSelect == []) {
         savedOrder.innerHTML = ``;
         let HTML = `<tr>
         <th>Nº do pedido</th>
@@ -329,13 +329,13 @@ function funcaoRemover() {
         arr.push(checkbox.id);
     })
     filtrado = arr.map(function (item) { return item });
-    arrSalvaPedidos = arrSalvaPedidos.filter((pedido) => {
+    arrGlobal = arrGlobal.filter((pedido) => {
         const estaSelecionado = filtrado.some((checked) => checked == pedido.numero);
         if (!estaSelecionado) {
             return pedido
         }
     })
-    if(arrSalvaPedidos == []){
+    if(arrGlobal == []){
         blankImg.removeAttribute("class","hidden")
     }
 
@@ -347,7 +347,7 @@ function funcaoRemover() {
     <th>Status</th>
 </tr><tr>`;
     let HTML = "<tr>";
-    arrSalvaPedidos.forEach(function (item) {
+    arrGlobal.forEach(function (item) {
         let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
         HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
         HTML += "<td>"
@@ -371,7 +371,7 @@ tabelaGeral.addEventListener("click", function funcaoTrocaStatus(event){
     if(botaoClicado.classList.contains("btn_status")){
         botaoClicado = botaoClicado.id
         console.log(botaoClicado)
-        arrSalvaPedidos.forEach((value)=>{
+        arrGlobal.forEach((value)=>{
             if(value.numero == (botaoClicado / 4)){
                 if(value.status === 'Recebido'){
                     value.status = "Pronto";
@@ -393,7 +393,7 @@ let visualizarTabela = () =>{
     <th>Valor</th>
     <th>Status</th>
 </tr><tr>`;
-    arrSalvaPedidos.forEach(function (item) {
+arrGlobal.forEach(function (item) {
         let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
         HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
         HTML += "<td>"
