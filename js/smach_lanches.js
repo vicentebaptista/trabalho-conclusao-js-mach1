@@ -439,6 +439,9 @@ function funcaoAdicionaNovoProduto(){
     codigoInserido = novoCod.value;
     precoInserido = novoPreco.value;
     itemInserido = novoItem.value;
+    if(codInserido == "" || precoInserido == "" || itemInserido == ""){
+        return alert("Todos os campos são obrigarórios")
+    }
     let codigosCadastrados = [];
     listaProdutos.forEach(function(item){return codigosCadastrados.push(item.codigo)})
     
@@ -457,6 +460,9 @@ function funcaoAdicionaNovoProduto(){
     for (var i = 0; i < itemNovo.length; i++) {
         arrNovoCadastro.push(itemNovo[i]);}
     itemNovo = [];
+    novoCod.value = "";
+    novoItem.value = "";
+    novoPreco.value = "";
 }
 function funcaoExibeNovosItens(arrNovosItens){
     arrNovosItens.forEach(function(item){
