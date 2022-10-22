@@ -234,8 +234,7 @@ function exibirTabelaPedidos(arrTotal) {
         HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td><button type="button" class="${item.numero}" onclick = "trocaStatus()"</button>${item.status}</td></tr>`
-        console.log(item.status)
+        <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>`
     })
     
     savedOrder.innerHTML += HTML;
@@ -272,7 +271,7 @@ function funcaoFiltrar() {
             HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td><button type="button" class="${item.numero}" onclick = "trocaStatus()"</button>${item.status}</td></tr>`
+        <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>`
             arrStatus = [];
         })
         savedOrder.innerHTML += HTML;
@@ -297,7 +296,7 @@ function funcaoFiltrar() {
             HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td><button type="button" class="${item.numero}" onclick = "trocaStatus()"</button>${item.status}</td></tr>`
+        <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>`
         })
         savedOrder.innerHTML += HTML;
 
@@ -322,6 +321,8 @@ function funcaoCheckbox() {
 
 }
 function funcaoRemover() {
+    let text = "Deseja realmente excluir o pedido?\nPressione OK para sim ou cancele.";
+  if (confirm(text) == true) {
     var arr = [];
     let checkboxes = document.querySelectorAll('input[name="pedidoID"]:checked');
     checkboxes.forEach((checkbox) => {
@@ -357,28 +358,32 @@ function funcaoRemover() {
         HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td><button type="button" class="btn_status" id="${item.numero}">${item.status}</button></td></tr>`
+        <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>`
     })
     savedOrder.innerHTML += HTML;
     formFilter.removeAttribute("hidden")
     campoOptions.setAttribute("hidden", "");
-}
+}}
+let tabelaGeral = document.querySelector("#order_items");
 let arrTrocaStatus = [];
-function trocaStatus(){
-    let classePedido = arrSalvaPedidos.map(function(item){return item.numero})
-    console.log(classePedido)
-    arrSalvaPedidos.forEach((value)=>{
-        const trocaStatus = classePedido.some((clicados)=> clicados == value.numero)
-        if(trocaStatus){
-            if(value.status === "Recebido"){
-                value.status = "Pronto";
-            } else (value.status = "Entregue")
-        }
-    })
-    for (var i = 0; i < arrSalvaPedidos.length; i++) {
-        arrTrocaStatus.push(arrSalvaPedidos[i]);}
+tabelaGeral.addEventListener("click", function funcaoTrocaStatus(event){
+    var botaoClicado = event.target;
+    if(botaoClicado.classList.contains("btn_status")){
+        botaoClicado = botaoClicado.id
+        console.log(botaoClicado)
+        arrSalvaPedidos.forEach((value)=>{
+            if(value.numero == (botaoClicado / 4)){
+                if(value.status === 'Recebido'){
+                    value.status = "Pronto";
+                }else {
+                    value.status = "Entregue"
+                }
+            }
+        })
+
    visualizarTabela()
-}
+
+}})
 let visualizarTabela = () =>{
     savedOrder.innerHTML = "";
     let HTML = `<tr>
@@ -388,7 +393,7 @@ let visualizarTabela = () =>{
     <th>Valor</th>
     <th>Status</th>
 </tr><tr>`;
-    arrTrocaStatus.forEach(function (item) {
+    arrSalvaPedidos.forEach(function (item) {
         let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
         HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
         HTML += "<td>"
@@ -399,7 +404,7 @@ let visualizarTabela = () =>{
         HTML += `
     <td>${item.tipo}</td>
     <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-    <td><button type="button" class="${item.numero}" onclick = "trocaStatus()"</button>${item.status}</td></td></tr>`
+    <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>`
     })
     savedOrder.innerHTML += HTML;
     arrTrocaStatus = [];
@@ -508,8 +513,13 @@ function funcaoVoltar(){
 var tabela = document.querySelector("#all_items");
 let arrBotao = [];
 tabela.addEventListener("click", function funcaoExcluir(event){
+    
+   
+  
     var botaoClicado = event.target;
     if(botaoClicado.classList.contains("btn_excluir")){
+        let text = "Deseja realmente excluir o produto?\nPressione OK para sim ou cancele.";
+  if (confirm(text) == true) {
     botaoClicado = botaoClicado.id;
     arrBotao.push(botaoClicado);
     listaProdutos = listaProdutos.filter((produto) => {
@@ -532,7 +542,7 @@ tabela.addEventListener("click", function funcaoExcluir(event){
         <button id="${item.codigo * 2}" name="botaoID" class="btn_excluir">Excluir</button></td><tr>`
     })
     arrBotao = [];
-}
+}}
 })
     tabela.addEventListener("click", function funcaoEditar(event){
     
