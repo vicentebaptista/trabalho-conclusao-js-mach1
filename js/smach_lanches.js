@@ -176,10 +176,6 @@ function funcaoAdicionarProduto() { //Funcao que inicia ao clicar em adicionar p
     }
 };
 function exibirItensPedido(arrItens) { //Essa função escreve os itens salvos no array dentro da tabela HTML
-    if(arrItens !== []){
-        blankImg.removeAttribute("hidden")
-        
-    }else{blankImg.setAttribute('class','hidden');}
     arrItens.forEach(function (item) {
         addedItems.innerHTML += `
                                 <tr>
@@ -232,7 +228,7 @@ function exibirTabelaPedidos(arrPedidoFinal) { //Função que grava o pedido na 
         HTML += `
         <td>${item.tipo}</td>
         <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>`
+        <td><button type="button" class="${item.numero} btn_status ${validStatus(item.status)}" id="${item.numero * 4}"</button>${item.status}</td></tr>`
     })
     
     savedOrder.innerHTML += HTML;
@@ -262,7 +258,7 @@ function gravaPedido(arrGravar){ //Essa função grava a tabela de pedidos basea
                         HTML += "</td>"
                         HTML += `<td>${item.tipo}</td>
                                  <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-                                 <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>` })
+                                 <td><button type="button" class="${item.numero} btn_status ${validStatus(item.status)}" id="${item.numero * 4}"</button>${item.status}</td></tr>` })
        
         savedOrder.innerHTML += HTML;
 }
@@ -283,6 +279,27 @@ function funcaoFiltrar() { //Função realiza o filtro dos campos select da tela
     }
 
 };
+let validStatus = (status) => {
+    let statusClass = "";
+    switch (status) {
+      case "Recebido":
+        statusClass = "Recebido";
+        break;
+  
+      case "Pronto":
+        statusClass = "Pronto";
+        break;
+  
+      case "Entregue":
+        statusClass = "Entregue";
+        break;
+  
+      default:
+        statusClass = "Recebido";
+        break;
+    }
+    return statusClass;
+  };
 // ==================================================================================================================================================================================
 //                                                                           FUNÇÃO EXCLUIR E ALTERA STATUS 
 // ================================================================================================================================================================================== 
@@ -429,24 +446,8 @@ tabela.addEventListener("click", function funcaoExcluir(event){ //Identifica o b
             return produto
         }
     })
-<<<<<<< HEAD
-    tableItems.innerHTML = `<tr>
-    <th>Código</th>
-    <th>Item</th>
-    <th>Preço</th>
-    <th>Ações</th>
-</tr>`
-    listaProdutos.forEach(function(item){
-        tableItems.innerHTML += `<tr><td>${item.codigo}</td>
-        <td>${item.produto}</td>
-        <td>R$${item.preco}<td>
-        <td><button id="${item.codigo}" class="btn_editar"> Editar</button>
-        <button id="${item.codigo * 2}" name="botaoID" class="btn_excluir">Excluir</button></td><tr>`
-    })
-=======
     exibeCadastrados(listaProdutos);
     alertify.success('Produto excluido com sucesso',2);
->>>>>>> aba2f0cdfa752410a814756a7bb8e1bb6cc74f5b
     arrBotao = [];
 }}
 })
