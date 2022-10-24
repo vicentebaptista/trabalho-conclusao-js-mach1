@@ -137,6 +137,7 @@ label{
     border-width: 1px 0px;
     border-color: #B3B3B3;
     font-family: 'Inter', sans-serif;
+    top: 412px;
 }
 .td_itens{
     width: 300px;
@@ -450,4 +451,23 @@ color: #B3B3B3;
     background: #85FFA0;
     border: 1px solid #00851D;
     border-radius: 8px;
+}
+
+.orders_info #orders_core{
+    position: absolute;
+    left: 611px;
+    top: 305px;
+    width: 400px
+}
+
+.orders_h #orders_core{
+    position: absolute;
+    left: 611px;
+    top: 521px;
+    width: 400px
+}
+
+.orders_core{
+    width: 800px;
+    height: 400px;
 }
