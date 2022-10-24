@@ -100,12 +100,12 @@ let arrFiltro = [];
 let arrPedido = [];
 let arrPed = [];
 let arrGlobal = [];
-// =============================================================================================
-//                            DECLARAÇÃO DAS VARIAVEIS
-// =============================================================================================
-// =============================================================================================
-//                    TELA DE INICIAL + CADASTRO DE ITENS NO PEDIDO 
-// =============================================================================================
+// ==================================================================================================================================================================================
+//                                                                            DECLARAÇÃO DAS VARIAVEIS
+// ==================================================================================================================================================================================
+// ==================================================================================================================================================================================
+//                                                                    TELA DE INICIAL + CADASTRO DE ITENS NO PEDIDO 
+// ==================================================================================================================================================================================
 function funcaoNovoPedido() {                                   // Esta função é iniciada quando o usuario clica em "Novo Pedido" e é responsável                                                                
     sessao1.setAttribute("class", "inactive");                 //                por mudar a tela para o ambiente de cadastro de pedidos
     sessao2.setAttribute("class", "active");
@@ -238,78 +238,58 @@ function exibirTabelaPedidos(arrPedidoFinal) { //Função que grava o pedido na 
     arrPed = []; //Zera o array contendo os itens pra evitar bug na inserção dos itens (e dá bug mesmo)
 
 };
-// ===================================================================================================================
-//                                FIM DO CADASTRO DE PEDIDOS + FUNÇÃO FILTRAR
-// ===================================================================================================================
+// ==================================================================================================================================================================================
+//                                                                 FIM DO CADASTRO DE PEDIDOS // FUNÇÃO FILTRAR
+// ==================================================================================================================================================================================
   
+function gravaPedido(arrGravar){ //Essa função grava a tabela de pedidos baseado no array em uso (será reutilizada várias vezes)
+        savedOrder.innerHTML = ``;
+        let HTML = `<tr>
+                        <th>Nº do pedido</th>
+                        <th>Itens</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                    </tr><tr>`;
+        arrGravar.forEach(function (item) {
+            let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
+                HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
+                HTML += "<td>"
+                    itensnopedido.forEach((elemento) => {
+                        HTML += `${elemento}<br>`})
+                        HTML += "</td>"
+                        HTML += `<td>${item.tipo}</td>
+                                 <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
+                                 <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>` })
+       
+        savedOrder.innerHTML += HTML;
+}
 function funcaoFiltrar() { //Função realiza o filtro dos campos select da tela inicial (Tipo e Status)
     let valorSelectFilter = filtroTipo.value;
     let valorStatus = filterStatus.value;
     let filtroSelect = arrGlobal.filter(function (item) {
-        return item.tipo == valorSelectFilter.toLowerCase() || valorSelectFilter == ""
+        return item.tipo == valorSelectFilter.toLowerCase() || valorSelectFilter == "" //Checa se o tipo do pedido corresponde a algum valor do filtro TIPO (Delivery ou Salão)
     })
     filtroSelect = filtroSelect.filter(function (item) {
-        return item.status == valorStatus || valorStatus == ""
+        return item.status == valorStatus || valorStatus == "" //Dentro do primeiro filtro checa se existe um valor para o filtro de status (filtra o status baseado no status do filtro tipo)
     })
     if (filtroSelect !== []) {
-        savedOrder.innerHTML = ``;
-        let HTML = `<tr>
-        <th>Nº do pedido</th>
-        <th class='td_itens'>Itens</th>
-        <th>Tipo</th>
-        <th>Valor</th>
-        <th>Status</th>
-        </tr><tr>`;
-        filtroSelect.forEach(function (item) {
-            let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
-            HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
-            HTML += "<td>"
-            itensnopedido.forEach((elemento) => {
-                HTML += `${elemento}<br>`
-            })
-            HTML += "</td>"
-            HTML += `
-        <td>${item.tipo}</td>
-        <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>`
-            arrStatus = [];
-        })
-        savedOrder.innerHTML += HTML;
+        gravaPedido(filtroSelect)
     }
     if (filtroSelect == []) {
-        savedOrder.innerHTML = ``;
-        let HTML = `<tr>
-        <th>Nº do pedido</th>
-        <th class='td_itens'>Itens</th>
-        <th>Tipo</th>
-        <th>Valor</th>
-        <th>Status</th>
-    </tr><tr>`;
-        arrFiltro.forEach(function (item) {
-            let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
-            HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
-            HTML += "<td>"
-            itensnopedido.forEach((elemento) => {
-                HTML += `${elemento}<br>`
-            })
-            HTML += "</td>"
-            HTML += `
-        <td>${item.tipo}</td>
-        <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>`
-        })
-        savedOrder.innerHTML += HTML;
-
+       gravaPedido(arrFiltro)
     }
 
 };
+// ==================================================================================================================================================================================
+//                                                                           FUNÇÃO EXCLUIR E ALTERA STATUS 
+// ================================================================================================================================================================================== 
 
-function funcaoCheckbox() {
+function funcaoCheckbox() { //Essa função verifica se as checkboxes dos pedidos estão marcadas e caso positivo exibe o botão de excluir pedido
     let checkboxes = document.querySelectorAll('input[name="pedidoID"]:checked')
     let valoresMarcados = [];
     checkboxes.forEach((checkbox) => {
         valoresMarcados.push(checkbox.id);
-
     })
     if (valoresMarcados.length > 0) {
         formFilter.setAttribute("hidden", "")
@@ -318,9 +298,8 @@ function funcaoCheckbox() {
         formFilter.removeAttribute("hidden")
         campoOptions.setAttribute("hidden", "");
     }
-
 }
-function funcaoRemover() {
+function funcaoRemover() { //Remove todos os itens marcados por checkbox ao clicar no botão excluir e confirmar a ação
     let text = "Deseja realmente excluir o pedido?\nPressione OK para sim ou cancele.";
   if (confirm(text) == true) {
     var arr = [];
@@ -330,7 +309,7 @@ function funcaoRemover() {
     })
     filtrado = arr.map(function (item) { return item });
     arrGlobal = arrGlobal.filter((pedido) => {
-        const estaSelecionado = filtrado.some((checked) => checked == pedido.numero);
+        const estaSelecionado = filtrado.some((checked) => checked == pedido.numero); //Verifica se o ID dos pedidos selecionados corresponde a algum dos pedidos na lista e retorna todos os pedidos **NÃO** selecionados
         if (!estaSelecionado) {
             return pedido
         }
@@ -338,35 +317,13 @@ function funcaoRemover() {
     if(arrGlobal == []){
         blankImg.removeAttribute("class","hidden")
     }
-
-    savedOrder.innerHTML = `<tr>
-    <th>Nº do pedido</th>
-    <th class='td_itens'>Itens</th>
-    <th>Tipo</th>
-    <th>Valor</th>
-    <th>Status</th>
-</tr><tr>`;
-    let HTML = "<tr>";
-    arrGlobal.forEach(function (item) {
-        let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
-        HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
-        HTML += "<td>"
-        itensnopedido.forEach((elemento) => {
-            HTML += `${elemento}<br>`
-        })
-        HTML += "</td>"
-        HTML += `
-        <td>${item.tipo}</td>
-        <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-        <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>`
-    })
-    savedOrder.innerHTML += HTML;
+    gravaPedido(arrGlobal);
     formFilter.removeAttribute("hidden")
     campoOptions.setAttribute("hidden", "");
 }}
-let tabelaGeral = document.querySelector("#order_items");
+let tabelaGeral = document.querySelector("#order_items"); //Obtem todos os itens dentro da tabela de pedidos cadastrados (HTML)
 let arrTrocaStatus = [];
-tabelaGeral.addEventListener("click", function funcaoTrocaStatus(event){
+tabelaGeral.addEventListener("click", function funcaoTrocaStatus(event){ //Função chamada ao clicar no botão de status do pedido, verifica se o id do botão corresponde ao numero do pedido e executa a ação de trocar o status
     var botaoClicado = event.target;
     if(botaoClicado.classList.contains("btn_status")){
         botaoClicado = botaoClicado.id
@@ -385,37 +342,18 @@ tabelaGeral.addEventListener("click", function funcaoTrocaStatus(event){
 
 }})
 let visualizarTabela = () =>{
-    savedOrder.innerHTML = "";
-    let HTML = `<tr>
-    <th>Nº do pedido</th>
-    <th class='td_itens'>Itens</th>
-    <th>Tipo</th>
-    <th>Valor</th>
-    <th>Status</th>
-</tr><tr>`;
-arrGlobal.forEach(function (item) {
-        let itensnopedido = item.itens.map(function (val) { return val.quantidade + " - " + val.item });
-        HTML += `<td><input type="checkbox" name="pedidoID" onClick="funcaoCheckbox()" id="${item.numero}">${item.numero}</td>`;
-        HTML += "<td>"
-        itensnopedido.forEach((elemento) => {
-            HTML += `${elemento}<br>`
-        })
-        HTML += "</td>"
-        HTML += `
-    <td>${item.tipo}</td>
-    <td>R$${item.itens.reduce((prev, elem) => prev + elem.preco, 0)}</td>
-    <td><button type="button" class="${item.numero} btn_status" id="${item.numero * 4}"</button>${item.status}</td></tr>`
-    })
-    savedOrder.innerHTML += HTML;
+    gravaPedido(arrGlobal);
     arrTrocaStatus = [];
 }
-
-function funcaoTelaRegistro(){
+// ====================================================================================================================================================================================
+//                                                                             FUNÇÕES DE CADASTRO DE PRODUTO 
+// ====================================================================================================================================================================================
+function funcaoTelaRegistro(){ //Função acionada ao clicar no botão cadastro de produtos e exibe a tela com todos os produtos cadastrados e opções
     sessao1.setAttribute("class","inactive");
     sessao3.setAttribute("class","active");
-    exibeCadastrados();
+    exibeCadastrados(listaProdutos);
 }
-function funcaoExibeCampos(){
+function funcaoExibeCampos(){ //Abre a tela de cadastro de um novo produto (também utilizada para edição dos cadastrados)
     botoesRegistro.setAttribute("class","hidden");
     tabelaCadastrados.setAttribute('class','inactive');
     telaCadastroProduto.setAttribute('class','active');
@@ -423,101 +361,63 @@ function funcaoExibeCampos(){
     novoItem.value = "";
     novoPreco.value = "";
 }
-function exibeCadastrados(){
+function exibeCadastrados(arrCadastrados){ //Função responsável por gravar a lista de produtos na tebela HTML
     tableItems.innerHTML = `<tr>
-    <th>Código</th>
-    <th>Item</th>
-    <th>Preço</th>
-    <th>Ações</th>
-</tr>`
-    listaProdutos.forEach(function(item){
-        tableItems.innerHTML += `<tr><td>${item.codigo}</td>
-        <td>${item.produto}</td>
-        <td>R$${item.preco}<td>
-        <td><button id="${item.codigo}" class="btn_editar">Editar</button>
-        <button id="${item.codigo * 2}" name="botaoID" class="btn_excluir">Excluir</button></td><tr>`
+                                <th>Código</th>
+                                <th>Item</th>
+                                <th>Preço</th>
+                                <th>Ações</th>
+                            </tr>`
+    arrCadastrados.forEach(function(item){
+        tableItems.innerHTML += `<tr>
+                                    <td>${item.codigo}</td>
+                                    <td>${item.produto}</td>
+                                    <td>R$${item.preco}<td>
+                                    <td><button id="${item.codigo}" class="btn_editar">Editar</button>
+                                    <button id="${item.codigo * 2}" name="botaoID" class="btn_excluir">Excluir</button></td>
+                                <tr>`
     })
 }
 let itemNovo = [];
 let arrNovoCadastro = [];
-function funcaoAdicionaNovoProduto(){
+function funcaoAdicionaNovoProduto(){ //Função utilizada para criar novo produto
     codigoInserido = novoCod.value;
     precoInserido = novoPreco.value;
     itemInserido = novoItem.value;
-    if(codInserido == "" || precoInserido == "" || itemInserido == ""){
+    if(codInserido == "" || precoInserido == "" || itemInserido == ""){ //Verifica se todos os campos estão devidamente preenchidos
         return alert("Todos os campos são obrigarórios")
     }
     let codigosCadastrados = [];
-    listaProdutos.forEach(function(item){return codigosCadastrados.push(item.codigo)})
-    
-    itemNovo.push({
+    listaProdutos.forEach(function(item){return codigosCadastrados.push(item.codigo)}) //Adiciona todos os códigos de produtos num array para verificação posterior
+    itemNovo.push({ //objeto do novo item
         codigo:codigoInserido,
         produto:itemInserido,
         preco:precoInserido
     })
-    let checaProduto = codigosCadastrados.some((value) => value == itemNovo.map(function(item){return item.codigo}))
+    let checaProduto = codigosCadastrados.some((value) => value == itemNovo.map(function(item){return item.codigo})) //Checa se o código do produto já existe e caso positivo impede que continue o cadastro
     if(checaProduto){
          alert("Código já cadastrado para outro produto");
          return itemNovo = [];
-        
     }
-    funcaoExibeNovosItens(itemNovo);
-    for (var i = 0; i < itemNovo.length; i++) {
-        arrNovoCadastro.push(itemNovo[i]);}
+    funcaoFinalizaRegistro(itemNovo);
     itemNovo = [];
     novoCod.value = "";
     novoItem.value = "";
     novoPreco.value = "";
 }
-function funcaoExibeNovosItens(arrNovosItens){
-    arrNovosItens.forEach(function(item){
-        newItemsTable.innerHTML += `<tr><td>${item.codigo}</td>
-        <td>${item.produto}</td>
-        <td>${item.preco}<td>`
-    })
+function funcaoFinalizaRegistro(novoCadastrado){ //Pega o item e adiciona no array contendo todos os itens cadastrados
+    for (var i = 0; i < novoCadastrado.length; i++) {
+        listaProdutos.push(novoCadastrado[i]);}
+    exibeCadastrados(listaProdutos)
+    botoesRegistro.removeAttribute('class','hidden');
+    tabelaCadastrados.setAttribute('class','active');
+    telaCadastroProduto.setAttribute('class','inactive');
 }
-function funcaoFinalizaRegistro(){
-    for (var i = 0; i < arrNovoCadastro.length; i++) {
-        listaProdutos.push(arrNovoCadastro[i]);}
-    tableItems.innerHTML = `<tr>
-    <th>Código</th>
-    <th>Item</th>
-    <th>Preço</th>
-    <th>Ações</th>
-</tr>`;
-    listaProdutos.forEach(function(item){
-        tableItems.innerHTML += `<tr><td>${item.codigo}</td>
-        <td>${item.produto}</td>
-        <td>R$${item.preco}<td>
-        <td><button id="${item.codigo}" class="btn_editar">Editar</button>
-        <button id="${item.codigo * 2}" name="botaoID" class="btn_excluir">Excluir</button></td><tr>`})
-        botoesRegistro.removeAttribute('class','hidden');
-        tabelaCadastrados.setAttribute('class','active');
-        telaCadastroProduto.setAttribute('class','inactive');
-        newItemsTable.innerHTML = `<tr>
-        <th>Código</th>
-        <th>Produto</th>
-        <th>Preço</th>
-    </tr>`;
-    arrNovoCadastro = [];
-}
-function funcaoVoltar(){
-    sessao1.setAttribute("class","active");
-    sessao3.setAttribute("class","inactive");
-    newItemsTable.innerHTML = `<tr>
-        <th>Código</th>
-        <th>Produto</th>
-        <th>Preço</th>
-    </tr>`;
-}
-var tabela = document.querySelector("#all_items");
+var tabela = document.querySelector("#all_items"); //Obtem todos os itens contidos na tabela de itens cadastrados (HTML)
 let arrBotao = [];
-tabela.addEventListener("click", function funcaoExcluir(event){
-    
-   
-  
+tabela.addEventListener("click", function funcaoExcluir(event){ //Identifica o botão clicado e verifica se o ID dele corresponde a um item e renderiza a nova tabela sem o item encontrado
     var botaoClicado = event.target;
-    if(botaoClicado.classList.contains("btn_excluir")){
+    if(botaoClicado.classList.contains("btn_excluir")){    //verifica se o clique feito foi de fato no botão correto
         let text = "Deseja realmente excluir o produto?\nPressione OK para sim ou cancele.";
   if (confirm(text) == true) {
     botaoClicado = botaoClicado.id;
@@ -528,31 +428,18 @@ tabela.addEventListener("click", function funcaoExcluir(event){
             return produto
         }
     })
-    tableItems.innerHTML = `<tr>
-    <th>Código</th>
-    <th>Item</th>
-    <th>Preço</th>
-    <th>Ações</th>
-</tr>`
-    listaProdutos.forEach(function(item){
-        tableItems.innerHTML += `<tr><td>${item.codigo}</td>
-        <td>${item.produto}</td>
-        <td>R$${item.preco}<td>
-        <td><button id="${item.codigo}" class="btn_editar">Editar</button>
-        <button id="${item.codigo * 2}" name="botaoID" class="btn_excluir">Excluir</button></td><tr>`
-    })
+    exibeCadastrados(listaProdutos);
     arrBotao = [];
 }}
 })
-    tabela.addEventListener("click", function funcaoEditar(event){
-    
+    tabela.addEventListener("click", function funcaoEditar(event){ //Identifica o botão clicado e verifica se o ID dele corresponde a um item, apaga ele do array de produtos e leva as informações pro campo de cadastro de itens
     var botaoClicado = event.target;
-    if(botaoClicado.classList.contains("btn_editar")){
+    if(botaoClicado.classList.contains("btn_editar")){ //verifica se o clique feito foi de fato no botão correto
     botaoClicado = botaoClicado.id;
     arrBotao.push(botaoClicado);
     let arrEdicao = [];
     arrEdicao = listaProdutos.filter((produto) => {
-        const estaSelecionado = arrBotao.some((value) => value == produto.codigo);
+        const estaSelecionado = arrBotao.some((value) => value == produto.codigo); //filtra o produto clicado em editar
         if (estaSelecionado) {
             return produto
         }
@@ -565,15 +452,22 @@ tabela.addEventListener("click", function funcaoExcluir(event){
     novoPreco.value = arrEdicao.map(function(item){return item.preco})
     let codigoEditado = arrEdicao.map(function(item){return item.codigo})
     listaProdutos = listaProdutos.filter((produto) => {
-        const estaSelecionado = codigoEditado.some((value) => value == produto.codigo);
+        const estaSelecionado = codigoEditado.some((value) => value == produto.codigo); //retorna o array sem o produto clicado, permitindo a inserção da atualização pelo cadastro
         if (!estaSelecionado) {
             return produto
         }
     })
-    console.log(listaProdutos);}
-  
+}
+arrBotao = [];
 })
+function funcaoVoltar(){ //volta pra tela inicial
+    sessao1.setAttribute("class","active");
+    sessao3.setAttribute("class","inactive");
+}
 
+// ====================================================================================================================================================================================
+//                                                                      FIM DO CÓDIGO - SETOR DOS EVENTLISTENER 
+// ====================================================================================================================================================================================
 btnNewOrder.addEventListener("click", () => funcaoNovoPedido());
 btnCancel.addEventListener("click", () => funcaoCancelar());
 btnAddProduct.addEventListener("click", () => funcaoAdicionarProduto());
@@ -588,6 +482,7 @@ botaoSalvaProduto.addEventListener("click",()=> funcaoAdicionaNovoProduto());
 botaoFinalizaRegistro.addEventListener("click", ()=> funcaoFinalizaRegistro());
 btnMenuPrincipal.addEventListener("click",()=> funcaoVoltar());
 
+// ======================================================================================================================================================================================
 //  __________________________         ___________________________        ________________________
 // /                          \       /                           \      /                        \
 // |   _______________________/       |     _________________     |      |   _____________________/
