@@ -23,19 +23,19 @@
         <button id="btn_product_registration">Cadastro de produtos</button>
         <form id="form_filter">
             <label>Filtrar por <br>
-                <select name="Tipo" id="filter_type">
-                    <option value="">Todos</option>
+                <select name="Tipo" id="filter_type" class="filter">
+                    <option value="">Tipo</option>
                     <option value="Delivery">Delivery</option>
                     <option value="Salao">Salão</option>
                 </select>
-                <select name="Status" id="filter_status">
-                    <option value="">Todos</option>
-                    <option value="Recebido">Recebido</option>
+                <select name="Status" id="filter_status" class="filter">
+                    <option value="">Status</option>
+                    <option value="Recebido" class="received">Recebido</option>
                     <option value="Pronto">Pronto</option>
                     <option value="Entregue">Entregue</option>
                 </select>
             </label>
-            <button id="button_print" onClick="window.print()" >imprimir</button>
+            <button id="button_print" onClick="window.print()" >Imprimir</button>
         </form>
         <div hidden id="options">
             <button id="remove">Excluir</button>
@@ -43,7 +43,7 @@
         <div class="orders_info">
             <table id="order_items">
                 <tr>
-                    <th>Nº do pedido</th>
+                    <th class="number_request">Nº do pedido</th>
                     <th>Itens</th>
                     <th>Tipo</th>
                     <th>Valor</th>
@@ -53,14 +53,14 @@
             <div class="orders_core">
                 <img src="/assets/img_sem_pedido.jpeg" id="no_order_img"alt="">
             </div>
-            <span class="copyright">Copyright Vicente Baptista sistemas feios</span>
+            <span class="copyright">Copyright Vicente Neto e Lorena Bastos</span>
         </div>
     </section>
     <section class="sec3 inactive" id="sessao2">
         <h1>Novo pedido</h1>
         <form action="#">
            <div id="consume">
-                <label>Tipo de consumo<br>
+                <label>Tipo de consumo<br><br>
                     <input type="radio" name="consumo" value="delivery">Delivery
                     <input type="radio" name="consumo" value="salao">Salão
                 </label>
@@ -68,7 +68,7 @@
             <label>Buscar produto <br>
                 <input type="number" id="product_code_input" placeholder="Código do produto">
                 <button type="button" id="button_search">Buscar</button>
-            </label><span id="erro"></span><br>
+            </label><span id="erro"></span><br><br>
             <div class="product_field">
                 <label class="label_product">Quantidade
                     <input type="number" id="product_qty_input" placeholder="0">
@@ -87,7 +87,7 @@
                 <tbody>
                     <tr>
                         <th>Código</th>
-                        <th>Produto</th>
+                        <th class="product">Produto</th>
                         <th>Quantidade</th>
                         <th>Valor</th>
                     </tr>
@@ -101,7 +101,7 @@
                 <button id="button_orders_cancel">Cancelar</button>
                 <button id="button_order_save">Salvar pedido</button>
             </div>
-            <span class="copyright">Copyright Vicente Neto e talvez Lorena Bastos</span>
+            <span class="copyright">Copyright Vicente Neto e Lorena Bastos</span>
         </div>
     </section>
     <section class="sec4 inactive" id="sessao3">
@@ -112,7 +112,7 @@
         </div>
         <div id="table_registration" class="active" >
             <h3>Todos os produtos</h3>
-            <table id="all_items">
+            <table id="all_items" >
                 <tbody>
                     <tr>
                         <th>Código</th>
