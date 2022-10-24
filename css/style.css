@@ -183,7 +183,7 @@ table td{
 }
 #total_amount{
     position: absolute;
-    left: 360px;
+    left: 520px;
 }
 
 /* PAGINA 2 */
@@ -423,7 +423,7 @@ color: #B3B3B3;
     gap: 8px;
     width: 88px;
     height: 30px;
-    background: #666666;;
+    background: #B3B3B3;
     border: 1px solid #333333;
     border-radius: 8px;
 }
@@ -450,4 +450,8 @@ color: #B3B3B3;
     background: #85FFA0;
     border: 1px solid #00851D;
     border-radius: 8px;
+}
+.orders_core{
+    width: 900px;
+    height: 400px;
 }

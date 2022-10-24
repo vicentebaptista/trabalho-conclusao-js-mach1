@@ -59,7 +59,8 @@ let btnAddProduct = document.getElementById('button_add_product');
 let btnCancel = document.getElementById('button_orders_cancel');
 let btnNewOrder = document.getElementById('button_new_order');
 let btnSave = document.getElementById('button_order_save');
-let blankImg = document.getElementById('no_order_img');
+let blankImg = document.getElementById('imagem_sem_pedido_order');
+let blankImg2 = document.getElementById('imagem_sem_pedido')
 let erro = document.getElementById('erro');
 let addedItems = document.getElementById('items');
 let totalPedido = document.getElementById('total_amount');
@@ -115,7 +116,7 @@ function funcaoNovoPedido() {                                   // Esta função
                                 <th>Quantidade</th>
                                 <th>Valor</th> 
                             </tr>`; //Reseta o header da tabela de cadastro de pedidos
-    totalPedido.innerHTML = "";    //Reseta o valor somado do pedido atual                     
+    totalPedido.innerHTML = "";    //Reseta o valor somado do pedido atual                    
     arrPedido = [];                                  
 }
 function insereHora(){
@@ -172,7 +173,7 @@ function funcaoAdicionarProduto() { //Funcao que inicia ao clicar em adicionar p
         }
         exibirItensPedido(arraypedidoitens);
         arraypedidoitens = [];
-
+        blankImg.setAttribute('hidden','true');
     }
 };
 function exibirItensPedido(arrItens) { //Essa função escreve os itens salvos no array dentro da tabela HTML
@@ -211,7 +212,7 @@ function funcaoSalvaPedido() { //Essa função troca novamente para tela inicial
     nPedido += 1;
     addedItems.innerHTML = "";
     totalPedido.innerHTML = "";
-
+    blankImg2.setAttribute('hidden','true');
 };
 function exibirTabelaPedidos(arrPedidoFinal) { //Função que grava o pedido na tabela da tela inicial
     for (var i = 0; i < arrPedidoFinal.length; i++) {
