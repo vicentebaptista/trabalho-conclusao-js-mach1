@@ -177,8 +177,9 @@ function funcaoAdicionarProduto() { //Funcao que inicia ao clicar em adicionar p
 };
 function exibirItensPedido(arrItens) { //Essa função escreve os itens salvos no array dentro da tabela HTML
     if(arrItens !== []){
-        blankImg.setAttribute('class','hidden');
-    }else{blankImg.removeAttribute("hidden")}
+        blankImg.removeAttribute("hidden")
+        
+    }else{blankImg.setAttribute('class','hidden');}
     arrItens.forEach(function (item) {
         addedItems.innerHTML += `
                                 <tr>
@@ -235,6 +236,7 @@ function exibirTabelaPedidos(arrPedidoFinal) { //Função que grava o pedido na 
     })
     
     savedOrder.innerHTML += HTML;
+    alertify.success('Pedido cadastrado com sucesso',2); 
     arrPed = []; //Zera o array contendo os itens pra evitar bug na inserção dos itens (e dá bug mesmo)
 
 };
@@ -320,9 +322,9 @@ function funcaoRemover() { //Remove todos os itens marcados por checkbox ao clic
     gravaPedido(arrGlobal);
     formFilter.removeAttribute("hidden")
     campoOptions.setAttribute("hidden", "");
+    alertify.success('Pedido excluido com sucesso',2);
 }}
 let tabelaGeral = document.querySelector("#order_items"); //Obtem todos os itens dentro da tabela de pedidos cadastrados (HTML)
-let arrTrocaStatus = [];
 tabelaGeral.addEventListener("click", function funcaoTrocaStatus(event){ //Função chamada ao clicar no botão de status do pedido, verifica se o id do botão corresponde ao numero do pedido e executa a ação de trocar o status
     var botaoClicado = event.target;
     if(botaoClicado.classList.contains("btn_status")){
@@ -343,7 +345,6 @@ tabelaGeral.addEventListener("click", function funcaoTrocaStatus(event){ //Funç
 }})
 let visualizarTabela = () =>{
     gravaPedido(arrGlobal);
-    arrTrocaStatus = [];
 }
 // ====================================================================================================================================================================================
 //                                                                             FUNÇÕES DE CADASTRO DE PRODUTO 
@@ -429,6 +430,7 @@ tabela.addEventListener("click", function funcaoExcluir(event){ //Identifica o b
         }
     })
     exibeCadastrados(listaProdutos);
+    alertify.success('Produto excluido com sucesso',2);
     arrBotao = [];
 }}
 })
@@ -479,14 +481,13 @@ btnRemove.addEventListener("click", () => funcaoRemover());
 btnProductRegistration.addEventListener("click", ()=> funcaoTelaRegistro());
 botaoNovoProduto.addEventListener("click",()=> funcaoExibeCampos());
 botaoSalvaProduto.addEventListener("click",()=> funcaoAdicionaNovoProduto());
-botaoFinalizaRegistro.addEventListener("click", ()=> funcaoFinalizaRegistro());
 btnMenuPrincipal.addEventListener("click",()=> funcaoVoltar());
 
 // ======================================================================================================================================================================================
-//  __________________________         ___________________________        ________________________
-// /                          \       /                           \      /                        \
-// |   _______________________/       |     _________________     |      |   _____________________/
-// |  |                               |    /                 \    |      |  |
+//  __________________________         ___________________________        _________________________
+// /                          \       /                           \      /                         \
+// |   _______________________/       |     _________________     |      |   ______________________/
+// |  |                               |    /                 \    |      |  | 
 // |  |                               |    |                  |   |      |  |
 // |  |                               |    |                  |   |      |  |
 // |  |                               |    |                  |   |      |  |
