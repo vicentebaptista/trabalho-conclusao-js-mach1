@@ -538,7 +538,7 @@ tabela.addEventListener("click", function funcaoExcluir(event){
         tableItems.innerHTML += `<tr><td>${item.codigo}</td>
         <td>${item.produto}</td>
         <td>R$${item.preco}<td>
-        <td><button id="${item.codigo}" class="btn_editar">Editar</button>
+        <td><button id="${item.codigo}" class="btn_editar"> Editar</button>
         <button id="${item.codigo * 2}" name="botaoID" class="btn_excluir">Excluir</button></td><tr>`
     })
     arrBotao = [];

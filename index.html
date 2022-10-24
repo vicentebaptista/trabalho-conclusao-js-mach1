@@ -19,8 +19,8 @@
     </section>
     <section class="sec2 active" id="sessao1">
         <h1>Todos os pedidos</h1>
-        <button id="button_new_order">Novo pedido</button>
-        <button id="btn_product_registration">Cadastro de produtos</button>
+        <button id="button_new_order"><img src="/assets/plus.png.png">Novo pedido</button>
+        <button id="btn_product_registration"><img src="/assets/plus.png.png">Cadastro de produtos</button>
         <form id="form_filter">
             <label>Filtrar por <br>
                 <select name="Tipo" id="filter_type" class="filter">
@@ -31,11 +31,11 @@
                 <select name="Status" id="filter_status" class="filter">
                     <option value="">Status</option>
                     <option value="Recebido" class="received">Recebido</option>
-                    <option value="Pronto">Pronto</option>
-                    <option value="Entregue">Entregue</option>
+                    <option value="Pronto" class="ready">Pronto</option>
+                    <option value="Entregue" class="delivered">Entregue</option>
                 </select>
             </label>
-            <button id="button_print" onClick="window.print()" >Imprimir</button>
+            <button id="button_print" onClick="window.print()" ><img src="/assets/impressao.png" class="img_button_print">   Imprimir</button>
         </form>
         <div hidden id="options">
             <button id="remove">Excluir</button>
@@ -65,9 +65,9 @@
                     <input type="radio" name="consumo" value="salao">Salão
                 </label>
            </div><br>
-            <label>Buscar produto <br>
+            <label> Buscar produto <br>
                 <input type="number" id="product_code_input" placeholder="Código do produto">
-                <button type="button" id="button_search">Buscar</button>
+                <button type="button" id="button_search"><img src="assets/Vector (2).png">Buscar</button>
             </label><span id="erro"></span><br><br>
             <div class="product_field">
                 <label class="label_product">Quantidade
@@ -82,7 +82,7 @@
             </div>
         </form>
         <button id="button_add_product" disabled>+ Adicionar Produto</button>
-        <div>
+        <div class="orders_h">
             <table  id="items">
                 <tbody>
                     <tr>
@@ -93,8 +93,9 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="orders_core">
-                <img src="/assets/img_sem_pedido.jpeg" id="no_ordr_img" alt="">
+            <div class="orders_core"><script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+                <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_awucen2m.json"  background="transparent"  speed="1"  style="width: 300px; height: 300px;"  loop  autoplay></lottie-player>
+                <h2>Não temos pedidos para mostrar.</h2>
             </div>
             <div class="orders_options">
                 <div id="total_amount"></div>
